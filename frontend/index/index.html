@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBook | Nền Tảng Số Hóa Tiện Ích Học Đường</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/index.css?v=9.0">
+</head>
+
+<body>
+
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">CAMPUS<span class="highlight">BOOK</span></a>
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li><a href="#hero">Trang chủ</a></li>
+                    <li><a href="#features">Tiện ích</a></li>
+                    <li><a href="#process">Quy trình</a></li>
+                    <li><a href="#about">Về chúng tôi</a></li>
+                </ul>
+                <a href="../pages/login.html" class="nav-btn-login">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </nav>
+
+    <header id="hero" class="hero">
+        <!-- Ảnh nền của người dùng -->
+        <div
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('../assets/images/campus-bg.jpg'); background-size: cover; background-position: center; opacity: 0.6; z-index: 1;">
+        </div>
+
+        <!-- Animated Gradient Background pha trộn -->
+        <div class="hero-orb orb-1" style="z-index: 2;"></div>
+        <div class="hero-orb orb-2" style="z-index: 2;"></div>
+        <div class="hero-orb orb-3" style="z-index: 2;"></div>
+
+        <!-- Lớp phủ tối mờ -->
+        <div class="hero-overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.55); z-index: 3;">
+        </div>
+        <div class="hero-content">
+            <span class="badge">🚀 Khai phá tiềm năng học đường 4.0</span>
+            <h1>Kết nối không gian<br><span class="gradient-text">Kiến tạo tương lai</span></h1>
+            <p>CampusBook xóa bỏ mọi rào cản hành chính rườm rà. Chỉ với vài thao tác, bạn sẽ sở hữu ngay không gian học
+                tập và trang thiết bị hiện đại nhất tại Campus.<br><span
+                    style="display: block; margin-top: 8px; color: #ffffff; font-weight: 700;">Nhanh chóng – Thông minh
+                    – Hoàn toàn tự động.</span></p>
+            <div class="hero-btns">
+                <a href="#features" class="btn-main">Khám phá tiện ích <i class="fas fa-arrow-right"></i></a>
+                <a href="#process" class="btn-outline">Xem quy trình</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="section">
+        <div class="bg-blob"></div>
+        <div class="container">
+            <div class="section-title">
+                <span class="sub-label">Giải pháp đột phá</span>
+                <h2>Hệ sinh thái tiện ích toàn diện</h2>
+                <p class="title-desc">Chúng tôi tối ưu hóa mọi trải nghiệm của sinh viên thông qua các tính năng cốt
+                    lõi.</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="f-card">
+                    <div class="f-icon-box"><i class="fas fa-calendar-check"></i></div>
+                    <h3>Đặt lịch thông minh</h3>
+                    <p>Hệ thống gợi ý phòng trống theo thời gian thực (Real-time). Tự động sắp xếp khung giờ học tập tối
+                        ưu, giúp bạn loại bỏ hoàn toàn tình trạng trùng lịch hay phải chờ đợi.</p>
+                </div>
+
+                <div class="f-card active">
+                    <div class="f-icon-box"><i class="fas fa-shield-halved"></i></div>
+                    <h3>Xác thực an toàn</h3>
+                    <p>Ứng dụng công nghệ mã định danh QR Code cá nhân. Mọi quy trình mượn - trả thiết bị đều được số
+                        hóa, đảm bảo tính minh bạch và bảo vệ tài sản campus tuyệt đối.</p>
+                    <span class="card-tag">Ưu tiên</span>
+                </div>
+
+                <div class="f-card">
+                    <div class="f-icon-box"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Quản lý tài nguyên</h3>
+                    <p>Cung cấp Dashboard báo cáo trực quan cho nhà trường. Dữ liệu mượn trả được phân tích để nâng cấp
+                        thiết bị dựa trên nhu cầu thực tế của chính bạn.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="process" class="section bg-soft">
+        <div class="container">
+            <div class="section-title">
+                <span class="sub-label">Cách thức hoạt động</span>
+                <h2>3 Bước để bắt đầu trải nghiệm</h2>
+            </div>
+            <div class="process-grid">
+                <div class="p-item">
+                    <div class="p-num">01</div>
+                    <h4>Tìm kiếm & Lựa chọn</h4>
+                    <p>Truy cập hệ thống, chọn phòng học hoặc thiết bị bạn cần qua bộ lọc thông minh (vị trí, loại
+                        phòng, thời gian).</p>
+                </div>
+                <div class="p-item">
+                    <div class="p-num">02</div>
+                    <h4>Đăng ký tức thì</h4>
+                    <p>Nhấn nút "Đặt chỗ". Hệ thống sẽ tự động gửi thông báo xác nhận và mã QR xác thực về tài khoản cá
+                        nhân của bạn.</p>
+                </div>
+                <div class="p-item">
+                    <div class="p-num">03</div>
+                    <h4>Nhận chỗ & Sử dụng</h4>
+                    <p>Quét mã QR tại điểm hẹn hoặc quầy kỹ thuật để kích hoạt quyền truy cập và bắt đầu học tập chuyên
+                        nghiệp.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container about-grid">
+            <div class="about-image">
+                <img src="../assets/images/vnu.jpg" alt="VNU Campus">
+                <div class="floating-label">
+                    <i class="fas fa-award"></i>
+                    <span>Tiêu chuẩn Quốc tế</span>
+                </div>
+            </div>
+            <div class="about-text">
+                <span class="sub-label">Về chúng tôi</span>
+                <h2>Sứ mệnh thay đổi cách học tập</h2>
+                <p>CampusBook được xây dựng bởi đội ngũ đam mê công nghệ giáo dục. Chúng tôi tin rằng, sinh viên cần
+                    dành 100% tâm trí vào việc sáng tạo thay vì phải loay hoay với những thủ tục mượn phòng hay thiết bị
+                    cũ kỹ.</p>
+                <ul class="about-list">
+                    <li><i class="fas fa-check-circle"></i> Đội ngũ hỗ trợ kỹ thuật trực tuyến 24/7.</li>
+                    <li><i class="fas fa-check-circle"></i> Hệ thống tích hợp trên đa nền tảng (Web/App).</li>
+                    <li><i class="fas fa-check-circle"></i> Cam kết bảo mật thông tin người dùng tuyệt đối.</li>
+                </ul>
+                <a href="../pages/vision.html" target="_blank" class="btn-text">Tìm hiểu thêm về tầm nhìn 2030 →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 <strong>CAMPUSBOOK</strong>. Nâng tầm giáo dục bằng sức mạnh công nghệ.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/api.js?v=3.0"></script>
+    <script src="../assets/js/auth.js?v=3.0"></script>
+</body>
+
+</html>
