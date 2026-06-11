@@ -1,0 +1,117 @@
+/* ================================================================
+   bookings.css
+   ================================================================ */
+body {
+    background-color: #F7F9FC;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #2F3A4F;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+}
+
+.card-form {
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid #EEF2F7;
+    box-shadow: 0 6px 20px rgba(100, 120, 160, 0.08);
+}
+
+.icon-header {
+    width: 60px;
+    height: 60px;
+    background: #EEF2FF;
+    color: #7C9DFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    margin: 0 auto 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #2F3A4F;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #7B8794;
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid #E8ECF4;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #2F3A4F;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #8FA8FF;
+    box-shadow: 0 0 0 4px rgba(143, 168, 255, 0.1);
+}
+
+.nhom-nut {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+    text-align: center;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.btn-gray {
+    background: #E8ECF4;
+    color: #7B8794;
+}
+
+.btn-gray:hover {
+    background: #D6DEEB;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #A5B4FF, #8FD3FE);
+    color: white;
+    box-shadow: 0 6px 16px rgba(143, 168, 255, 0.25);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(143, 168, 255, 0.35);
+}
