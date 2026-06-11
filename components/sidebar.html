@@ -1,0 +1,152 @@
+<aside class="sidebar">
+    <h2 class="sidebar-logo">CAMPUS<span class="logo-highlight">BOOK</span></h2>
+    
+    <!-- User Profile Card trong Sidebar -->
+    <a href="my-bookings.html?tab=profile" id="sidebar-profile-link" style="text-decoration: none; display: block; margin-bottom: 25px;">
+        <div class="sidebar-user-card" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #EEF2FF; border: 1px solid #E8ECF4; border-radius: 16px; transition: 0.2s;">
+            <div class="sidebar-avatar-wrapper" style="position: relative; width: 44px; height: 44px; flex-shrink: 0;">
+                <img id="sidebar-user-avatar" src="" alt="Avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #8FA8FF; background: #e2e8f0;">
+            </div>
+            <div class="sidebar-user-info" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">
+                <div id="sidebar-user-name" style="font-weight: 700; font-size: 0.9rem; color: #2F3A4F; overflow: hidden; text-overflow: ellipsis;">Đang tải...</div>
+                <div id="sidebar-user-role" style="font-size: 0.75rem; color: #7B8794; font-weight: 600; text-transform: uppercase;">User</div>
+            </div>
+        </div>
+    </a>
+    
+    <nav class="sidebar-menu">
+        <a href="../index/index.html" id="menu-home"><i class="fas fa-home"></i> Trang chủ</a>
+        <a href="dashboard.html" id="menu-dashboard"><i class="fas fa-th-large"></i> Tổng quan</a>
+        <a href="resources.html" id="menu-resources"><i class="fas fa-building"></i> Phòng & Sân</a>
+        <a href="my-bookings.html" id="menu-my-bookings"><i class="fas fa-calendar-check"></i> Lịch của tôi</a>
+        <a href="approvals.html" id="menu-approvals"><i class="fas fa-check-circle"></i> Duyệt đơn</a>
+        <a href="reports.html" id="menu-reports"><i class="fas fa-chart-pie"></i> Báo cáo</a>
+        <a href="users.html" id="menu-users"><i class="fas fa-user-cog"></i> Quản lý User</a>
+    </nav>
+    <div class="sidebar-footer">
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid rgba(0,0,0,0.05);">
+        <a href="#" onclick="dangXuat(); return false;" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+    </div>
+</aside>
+
+<style>
+    /* Reset & Sidebar Styles */
+    .sidebar {
+        box-sizing: border-box;
+        width: 260px;
+        background: #ffffff;
+        color: #2F3A4F;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        border-right: 1px solid #EEF2F7;
+        box-shadow: 0 6px 20px rgba(100, 120, 160, 0.04);
+    }
+    .sidebar * {
+        box-sizing: border-box;
+    }
+    .sidebar-logo {
+        font-size: 1.6rem;
+        margin-bottom: 40px;
+        text-align: center;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #2F3A4F;
+    }
+    .sidebar-logo .logo-highlight {
+        background: linear-gradient(135deg, #A5B4FF 0%, #8FD3FE 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: #8FA8FF;
+    }
+    .sidebar-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .sidebar-menu a {
+        color: #64748b;
+        text-decoration: none;
+        padding: 12px 15px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: 0.3s;
+        font-weight: 500;
+    }
+    .sidebar-menu a i { width: 20px; color: #94a3b8; transition: 0.3s; }
+    
+    .sidebar-menu a:hover {
+        background: #EEF2FF;
+        color: #8FA8FF;
+    }
+    .sidebar-menu a:hover i { color: #8FA8FF; }
+    
+    .sidebar-menu a.active {
+        background: linear-gradient(135deg, #A5B4FF 0%, #8FD3FE 100%);
+        color: white;
+        box-shadow: 0 6px 16px rgba(143, 168, 255, 0.25);
+    }
+    .sidebar-menu a.active i { color: white; }
+
+    /* Bottom Logout Styles */
+    .sidebar-footer {
+        margin-top: auto;
+    }
+    .logout-btn {
+        color: #ef4444;
+        text-decoration: none;
+        padding: 12px 15px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: 0.3s;
+        font-weight: 500;
+    }
+    .logout-btn i { width: 20px; color: #ef4444; transition: 0.3s; }
+    .logout-btn:hover {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+    .logout-btn:hover i { color: #dc2626; }
+
+    /* Toast Notification Styles */
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+    }
+    .toast {
+        background: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+        animation: slideIn 0.3s ease-out;
+        border-left: 5px solid #8FA8FF;
+    }
+    .toast.success { border-left-color: #57C59A; }
+    .toast.error { border-left-color: #ef4444; }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    .sidebar-user-card:hover {
+        background: #EFF6FF !important;
+        border-color: #D6DEEB !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    }
+</style>
