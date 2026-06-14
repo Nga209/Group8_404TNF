@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Người Dùng | CampusBook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../assets/css/resources.css?v=13.0">
+    <style>
+        .filter-section {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(143, 168, 255, 0.12);
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-soft);
+        }
+        .search-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 12px;
+            border: 1px solid rgba(143, 168, 255, 0.15);
+            background: white;
+            font-family: inherit;
+            font-weight: 550;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.25s;
+        }
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(143, 168, 255, 0.15);
+        }
+        .search-wrapper i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate);
+        }
+        .select-filter {
+            padding: 12px 35px 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(143, 168, 255, 0.15);
+            background: white;
+            font-family: inherit;
+            font-weight: 600;
+            outline: none;
+            color: var(--dark);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .select-filter:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(143, 168, 255, 0.15);
+        }
+
+
+        
+        /* Style cho select đổi vai trò dạng badge */
+        .role-select {
+            padding: 8px 30px 8px 16px !important;
+            font-size: 0.8rem !important;
+            font-weight: 700 !important;
+            border-radius: 20px !important;
+            border: 1px solid transparent !important;
+            appearance: none;
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            outline: none;
+            display: inline-block;
+        }
+        .role-select.role-select-user {
+            background-color: rgba(99, 102, 241, 0.08) !important;
+            color: #6366f1 !important;
+            border-color: rgba(99, 102, 241, 0.15) !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E") !important;
+        }
+        .role-select.role-select-teacher {
+            background-color: rgba(14, 165, 233, 0.08) !important;
+            color: #0ea5e9 !important;
+            border-color: rgba(14, 165, 233, 0.15) !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230ea5e9' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E") !important;
+        }
+        .role-select.role-select-admin {
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            color: #ef4444 !important;
+            border-color: rgba(239, 68, 68, 0.15) !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ef4444' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E") !important;
+        }
+        .role-select:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .role-select option {
+            background-color: white !important;
+            color: #1e293b !important;
+            font-weight: 500 !important;
+        }
+
+        /* Custom Table Styles */
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .custom-table th {
+            padding: 18px 20px;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(143, 168, 255, 0.15);
+        }
+        .custom-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(143, 168, 255, 0.06);
+            color: var(--dark);
+            font-size: 0.95rem;
+            font-weight: 550;
+            transition: background 0.2s;
+        }
+        .custom-table tbody tr:hover td {
+            background: rgba(143, 168, 255, 0.04);
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .role-admin { 
+            background: #fee2e2; 
+            color: #dc2626; 
+            border: 1px solid rgba(220, 38, 38, 0.15);
+        }
+        .role-teacher { 
+            background: #e0f2fe; 
+            color: #0ea5e9; 
+            border: 1px solid rgba(14, 165, 233, 0.15);
+        }
+        .role-user { 
+            background: #f0fdf4; 
+            color: #16a34a; 
+            border: 1px solid rgba(22, 163, 74, 0.15);
+        }
+
+        .status-toggle {
+            cursor: pointer;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 50px;
+            transition: all 0.25s;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-active { 
+            background: #ecfdf5; 
+            color: #10b981; 
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+        .status-active:hover {
+            background: #fee2e2;
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .status-locked { 
+            background: #fef2f2; 
+            color: #ef4444; 
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+        .status-locked:hover {
+            background: #ecfdf5; 
+            color: #10b981; 
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        /* Assign button & tag styles */
+        .btn-assign {
+            cursor: pointer;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            background: rgba(14, 165, 233, 0.08);
+            color: #0ea5e9;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s;
+            outline: none;
+        }
+        .btn-assign:hover {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+        }
+        .assigned-tag {
+            background: rgba(99, 102, 241, 0.06);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.12);
+            padding: 2px 8px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            padding: 40px;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: scaleIn 0.3s ease;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: var(--slate);
+            cursor: pointer;
+            transition: 0.25s;
+        }
+        .close-btn:hover { color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+        <header class="header-center">
+            <p class="top-badge-v2">QUẢN TRỊ VIÊN</p>
+            <h1 class="section-title">Quản Lý Tài Khoản</h1>
+            <p class="sub-text">Phân quyền vai trò, khóa/mở khóa tài khoản và thiết lập quyền truy cập cho toàn trường.</p>
+        </header>
+
+        <div class="filter-section">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-box" class="search-input" placeholder="Tìm theo tên hoặc email..." oninput="locDanhSach()">
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <select id="filter-role" class="select-filter" onchange="locDanhSach()">
+                    <option value="all">Tất cả vai trò</option>
+                    <option value="admin">Admin</option>
+                    <option value="teacher">Giảng viên (Teacher)</option>
+                    <option value="user">Sinh viên (User)</option>
+                </select>
+                <select id="filter-status" class="select-filter" onchange="locDanhSach()">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="1">Đang hoạt động</option>
+                    <option value="0">Đã khóa</option>
+                </select>
+                <button class="btn-confirm" onclick="moModalThemUser()" style="width: auto; padding: 12px 24px; font-size: 0.95rem; border-radius: 12px; background: var(--primary); margin: 0; white-space: nowrap; height: 46px; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-user-plus"></i> Thêm người dùng mới
+                </button>
+            </div>
+        </div>
+
+        <div class="table-card" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-radius: 28px; border: 1px solid rgba(143, 168, 255, 0.12); box-shadow: var(--shadow-soft); overflow-x: auto; padding: 30px;">
+            <table class="custom-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Họ tên & Tên đăng nhập</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Đổi vai trò</th>
+                        <th>Phân công</th>
+                    </tr>
+                </thead>
+                <tbody id="users-list">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: var(--slate);">Đang tải danh sách người dùng...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- MODAL: ADD USER -->
+    <div class="modal" id="add-user-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="dongModalThemUser()"><i class="fas fa-times"></i></button>
+            <h2 style="font-weight: 800; letter-spacing: -1px; margin-bottom: 25px; color: #0f172a;">Tạo tài khoản mới</h2>
+            
+            <form id="add-user-form" onsubmit="themUser(event)">
+                <div class="form-group">
+                    <label class="form-label">Họ và tên</label>
+                    <input type="text" id="new-fullname" class="form-input-v2" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tên đăng nhập</label>
+                    <input type="text" id="new-username" class="form-input-v2" placeholder="nguyenvana" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="new-email" class="form-input-v2" placeholder="vana@campus.edu.vn" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu ban đầu</label>
+                    <input type="password" id="new-password" class="form-input-v2" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Vai trò hệ thống</label>
+                    <select id="new-role" class="form-input-v2" style="height: 50px;">
+                        <option value="user">Sinh viên (User)</option>
+                        <option value="teacher">Giảng viên (Teacher)</option>
+                        <option value="admin">Quản trị viên (Admin)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-confirm" style="margin-top: 15px;">Tạo tài khoản</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ASSIGN RESOURCES -->
+    <div class="modal" id="assign-resources-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="close-btn" onclick="dongModalPhanCong()"><i class="fas fa-times"></i></button>
+            <h2 style="font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; color: #0f172a;">Phân công quản lý</h2>
+            <p style="color: var(--slate); font-size: 0.9rem; margin-bottom: 25px;">Chọn các tài nguyên phân công cho giảng viên: <strong id="assign-teacher-name" style="color: var(--primary);"></strong></p>
+            
+            <form id="assign-resources-form" onsubmit="luuPhanCong(event)">
+                <input type="hidden" id="assign-teacher-id">
+                <div id="resources-checkboxes-list" style="max-height: 300px; overflow-y: auto; padding: 10px; border: 1px solid rgba(143, 168, 255, 0.15); border-radius: 12px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px; background: #fafafa;">
+                    <!-- Checkboxes will be rendered here dynamically -->
+                </div>
+                <button type="submit" class="btn-confirm">Lưu phân công</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/components.js?v=20.0"></script>
+    <script>
+        loadSidebar('users');
+        baoVeTrang(['admin']);
+
+        let usersCache = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            taiDanhSachUsers();
+        });
+
+        async function taiDanhSachUsers() {
+            const listContainer = document.getElementById('users-list');
+            try {
+                const resp = await goiApi('/users');
+                if (resp.status === 'success') {
+                    usersCache = Array.isArray(resp.data) ? resp.data : [];
+                    locDanhSach();
+                } else {
+                    listContainer.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--danger);">${resp.message}</td></tr>`;
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải/xử lý danh sách users:", error);
+                listContainer.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--danger);">Không thể kết nối API hoặc xử lý dữ liệu.</td></tr>';
+            }
+        }
+
+        function locDanhSach() {
+            const search = document.getElementById('search-box').value.toLowerCase();
+            const role = document.getElementById('filter-role').value;
+            const status = document.getElementById('filter-status').value;
+            const listContainer = document.getElementById('users-list');
+
+            const filtered = usersCache.filter(u => {
+                const fullname = u.fullname ? u.fullname.toLowerCase() : '';
+                const username = u.username ? u.username.toLowerCase() : '';
+                const email = u.email ? u.email.toLowerCase() : '';
+
+                const matchesSearch = fullname.includes(search) || 
+                                      username.includes(search) || 
+                                      email.includes(search);
+                const matchesRole = (role === 'all' || u.role === role);
+                
+                const uStatusStr = (u.status !== null && u.status !== undefined) ? u.status.toString() : '';
+                const matchesStatus = (status === 'all' || uStatusStr === status);
+
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--slate);">Không có tài khoản nào khớp bộ lọc.</td></tr>';
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map(u => {
+                const isActive = u.status == 1;
+                const fullname = u.fullname || '';
+                const username = u.username || '';
+                const email = u.email || '';
+                const role = u.role || 'user';
+                const statusVal = u.status !== null && u.status !== undefined ? u.status : 1;
+
+                let actionBtn = '';
+                if (role === 'teacher') {
+                    let tagsHtml = '';
+                    if (u.assigned_resources) {
+                        const rooms = u.assigned_resources.split(', ');
+                        if (rooms.length === 1) {
+                            tagsHtml = `<span class="assigned-tag" title="${u.assigned_resources}">${rooms[0]}</span>`;
+                        } else {
+                            tagsHtml = `<span class="assigned-tag" style="background: rgba(14, 165, 233, 0.08); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.2); cursor: help;" title="${u.assigned_resources}"><i class="fas fa-cubes"></i> ${rooms.length} phòng</span>`;
+                        }
+                    } else {
+                        tagsHtml = `<span style="font-size: 0.75rem; color: var(--slate); font-style: italic;">Chưa phân công</span>`;
+                    }
+                    actionBtn = `
+                        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center; justify-content: center; padding: 5px 0;">
+                            <button class="btn-assign" onclick="moModalPhanCong(${u.id}, '${fullname}')">
+                                <i class="fas fa-sliders-h"></i> Cấu hình phòng
+                            </button>
+                            <div style="display: flex; justify-content: center; margin-top: 2px;">
+                                ${tagsHtml}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    actionBtn = `<span style="color: var(--slate); font-size: 0.85rem;">—</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 700; color: #0f172a;">${fullname}</div>
+                            <div style="font-size: 0.8rem; color: var(--slate);">@${username}</div>
+                        </td>
+                        <td>${email}</td>
+                        <td>
+                            <span class="role-badge role-${role}">
+                                <i class="fas ${role === 'admin' ? 'fa-user-crown' : role === 'teacher' ? 'fa-user-tie' : 'fa-user-grad'}"></i>
+                                ${role}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="status-toggle ${isActive ? 'status-active' : 'status-locked'}" 
+                                    onclick="doiTrangThai(${u.id}, ${statusVal})" 
+                                    title="${isActive ? 'Khóa tài khoản' : 'Kích hoạt tài khoản'}">
+                                <i class="fas ${isActive ? 'fa-unlock' : 'fa-lock'}"></i>
+                                <span style="font-size: 0.85rem; font-weight:700; margin-left:5px;">${isActive ? 'Hoạt động' : 'Đã khóa'}</span>
+                            </button>
+                        </td>
+                        <td>
+                            <select class="role-select role-select-${role}" onchange="doiVaiTro(${u.id}, this.value)">
+                                <option value="user" ${role === 'user' ? 'selected' : ''}>Sinh viên</option>
+                                <option value="teacher" ${role === 'teacher' ? 'selected' : ''}>Giảng viên</option>
+                                <option value="admin" ${role === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                        </td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function doiTrangThai(userId, currentStatus) {
+            const newStatus = currentStatus == 1 ? 0 : 1;
+            const actionText = newStatus == 1 ? "Mở khóa" : "Khóa";
+            if (!confirm(`Bạn có chắc muốn ${actionText} tài khoản này không?`)) return;
+
+            try {
+                const resp = await goiApi('/admin/users/update-status', 'POST', { user_id: userId, status: newStatus });
+                if (resp.status === 'success') {
+                    showToast(`${actionText} tài khoản thành công!`);
+                    taiDanhSachUsers();
+                } else {
+                    showToast(resp.message, 'error');
+                }
+            } catch (e) {
+                showToast("Lỗi hệ thống", 'error');
+            }
+        }
+
+        async function doiVaiTro(userId, newRole) {
+            try {
+                const resp = await goiApi('/admin/users/update-role', 'POST', { user_id: userId, role: newRole });
+                if (resp.status === 'success') {
+                    showToast("Cập nhật vai trò thành công!");
+                    taiDanhSachUsers();
+                } else {
+                    showToast(resp.message, 'error');
+                }
+            } catch (e) {
+                showToast("Lỗi hệ thống", 'error');
+            }
+        }
+
+        function moModalThemUser() {
+            document.getElementById('add-user-modal').classList.add('active');
+        }
+
+        function dongModalThemUser() {
+            document.getElementById('add-user-modal').classList.remove('active');
+            document.getElementById('add-user-form').reset();
+        }
+
+        async function themUser(e) {
+            e.preventDefault();
+            const fullname = document.getElementById('new-fullname').value;
+            const username = document.getElementById('new-username').value;
+            const email = document.getElementById('new-email').value;
+            const password = document.getElementById('new-password').value;
+            const role = document.getElementById('new-role').value;
+
+            try {
+                const resp = await goiApi('/admin/users/create', 'POST', { fullname, username, email, password, role });
+                if (resp.status === 'success') {
+                    showToast("Tạo tài khoản người dùng thành công!");
+                    dongModalThemUser();
+                    taiDanhSachUsers();
+                } else {
+                    showToast(resp.message, 'error');
+                }
+            } catch (error) {
+                showToast("Lỗi kết nối máy chủ", 'error');
+            }
+        }
+
+        let activeTeacherId = null;
+
+        async function moModalPhanCong(teacherId, teacherName) {
+            activeTeacherId = teacherId;
+            document.getElementById('assign-teacher-id').value = teacherId;
+            document.getElementById('assign-teacher-name').innerText = teacherName;
+            
+            const checkboxesList = document.getElementById('resources-checkboxes-list');
+            checkboxesList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--slate);">Đang tải danh sách tài nguyên...</div>';
+            
+            document.getElementById('assign-resources-modal').classList.add('active');
+
+            try {
+                const resResp = await goiApi('/resources');
+                const assignedResp = await goiApi(`/admin/teacher-resources?teacher_id=${teacherId}`);
+
+                if (resResp.status === 'success' && assignedResp.status === 'success') {
+                    const allResources = resResp.data || [];
+                    const assignedIds = assignedResp.data || [];
+
+                    if (allResources.length === 0) {
+                        checkboxesList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--slate);">Không có tài nguyên nào trong hệ thống.</div>';
+                        return;
+                    }
+
+                    checkboxesList.innerHTML = allResources.map(res => {
+                        const isChecked = assignedIds.includes(res.id) ? 'checked' : '';
+                        const capText = res.capacity ? ` (Sức chứa: ${res.capacity})` : '';
+                        const slotTypeText = res.slot_type === 'academic' ? 'Học thuật' : 'Thể thao';
+                        return `
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px 15px; background: white; border: 1px solid rgba(143, 168, 255, 0.08); border-radius: 8px; font-weight: 550; font-size: 0.95rem; color: var(--dark); transition: all 0.2s; margin-bottom: 0;">
+                                <input type="checkbox" name="assigned_resources" value="${res.id}" ${isChecked} style="width: 18px; height: 18px; cursor: pointer; margin: 0;">
+                                <span>
+                                    <strong>${res.name}</strong> - ${res.location} ${capText}
+                                    <span style="font-size: 0.75rem; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">${slotTypeText}</span>
+                                </span>
+                            </label>
+                        `;
+                    }).join('');
+                } else {
+                    checkboxesList.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--danger);">Lỗi tải dữ liệu.</div>`;
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải thông tin phân công:", error);
+                checkboxesList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--danger);">Không thể kết nối API.</div>';
+            }
+        }
+
+        function dongModalPhanCong() {
+            document.getElementById('assign-resources-modal').classList.remove('active');
+            document.getElementById('assign-resources-form').reset();
+            document.getElementById('resources-checkboxes-list').innerHTML = '';
+        }
+
+        async function luuPhanCong(e) {
+            e.preventDefault();
+            const teacherId = activeTeacherId;
+            const checkboxes = document.querySelectorAll('input[name="assigned_resources"]:checked');
+            const resourceIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+            try {
+                const resp = await goiApi('/admin/teacher-resources/assign', 'POST', {
+                    teacher_id: teacherId,
+                    resource_ids: resourceIds
+                });
+                if (resp.status === 'success') {
+                    showToast("Cập nhật phân công thành công!");
+                    dongModalPhanCong();
+                    taiDanhSachUsers();
+                } else {
+                    showToast(resp.message, 'error');
+                }
+            } catch (error) {
+                showToast("Lỗi kết nối máy chủ", 'error');
+            }
+        }
+    </script>
+</body>
+</html>
