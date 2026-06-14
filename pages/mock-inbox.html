@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình giả lập Hòm thư | CampusBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8FA8FF;
+            --primary-light: #EEF2FF;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(143, 168, 255, 0.1), 0 4px 6px -2px rgba(143, 168, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8FD3FE 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(143, 168, 255, 0.25);
+        }
+
+        .logo-title h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8FD3FE 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-title p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .role-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background-color: #fee2e2;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .role-badge.admin {
+            background-color: #d1fae5;
+            color: #10b981;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            background-color: var(--bg-card);
+            color: var(--text-dark);
+        }
+
+        .btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #8FD3FE 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(143, 168, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            color: white;
+            background: linear-gradient(135deg, #8FA8FF 0%, #8FD3FE 100%);
+            box-shadow: 0 6px 16px rgba(143, 168, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Container */
+        .app-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar - Danh sách Mail */
+        .email-list-panel {
+            width: 380px;
+            border-right: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #F8FAFC;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 38px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-card);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(143, 168, 255, 0.15);
+        }
+
+        .email-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .email-item {
+            padding: 18px 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .email-item:hover {
+            background-color: var(--bg-page);
+        }
+
+        .email-item.active {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding-left: 11px;
+        }
+
+        .email-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 6px;
+        }
+
+        .recipient-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: #EEF2FF;
+            padding: 3px 8px;
+            border-radius: 6px;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .email-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .email-subject {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .email-excerpt {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Chi tiết Email */
+        .email-detail-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #f1f5f9;
+            overflow: hidden;
+        }
+
+        .no-email-selected {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            gap: 15px;
+        }
+
+        .no-email-selected i {
+            font-size: 4rem;
+            color: #cbd5e1;
+        }
+
+        .email-content-card {
+            margin: 25px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .email-header-info {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+        .email-detail-subject {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .email-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .email-sender-receiver {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-line {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .meta-line strong {
+            color: var(--text-dark);
+        }
+
+        .email-detail-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .email-body-container {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Iframe render mail để cô lập style */
+        .mail-render-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+        }
+
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        /* Enforced Access Control Overlay */
+        .secure-overlay {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            background: rgba(248, 250, 252, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .secure-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            max-width: 450px;
+            width: 90%;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .secure-card i {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .secure-card h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .secure-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .secure-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            outline: none;
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .secure-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(143, 168, 255, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+            <div class="logo-title">
+                <h1>VIRTUAL MAIL BOX</h1>
+                <p>Trình Giả Lập Nhận Thư Localhost | CampusBook</p>
+            </div>
+        </div>
+        
+        <div class="action-group">
+            <div id="roleBadge" class="role-badge"><i class="fa-solid fa-user-shield"></i> Khách (Chế độ xem giới hạn)</div>
+            <button class="btn" id="btnClearInbox" style="display: none;"><i class="fa-regular fa-trash-can"></i> Xóa tất cả thư</button>
+            <button class="btn btn-primary" id="btnRefresh"><i class="fa-solid fa-rotate"></i> Làm mới</button>
+            <button class="btn" onclick="window.location.href='login.html'"><i class="fa-solid fa-arrow-right-to-bracket"></i> Về Đăng Nhập</button>
+        </div>
+    </header>
+
+    <!-- Overlay bảo mật tra cứu email -->
+    <div id="secureOverlay" class="secure-overlay" style="display: none;">
+        <div class="secure-card">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h2>🔒 Tra Cứu Hộp Thư Cá Nhân</h2>
+            <p>Để đảm bảo tính bảo mật của mã xác nhận (OTP), vui lòng nhập đúng địa chỉ Email tài khoản của bạn để tra cứu các thư gửi đến riêng bạn.</p>
+            <form id="secureVerifyForm">
+                <input type="email" id="secureEmailInput" class="secure-input" placeholder="nhap_email_cua_ban@campus.edu.vn" required>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px;">Xác Nhận & Tra Cứu</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Panel bên trái: Danh sách thư -->
+        <div class="email-list-panel">
+            <div class="search-box">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm trong hộp thư ảo...">
+                </div>
+            </div>
+            <div class="email-list" id="emailListContainer">
+                <div class="empty-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Đang tải hòm thư...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel bên phải: Chi tiết thư -->
+        <div class="email-detail-panel" id="emailDetailPanel">
+            <div class="no-email-selected">
+                <i class="fa-regular fa-envelope"></i>
+                <p style="font-weight: 600;">Chọn một email từ danh sách bên trái để đọc nội dung</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js?v=1.1"></script>
+    <script src="../assets/js/auth.js?v=1.1"></script>
+    <script>
+        let allEmails = [];
+        let selectedEmailId = null;
+        
+        // Trạng thái phân quyền bảo mật
+        let currentSessionUser = layUser();
+        let isAdminUser = currentSessionUser && currentSessionUser.role === 'admin';
+        
+        // Email được phép xem (Nếu là admin thì xem hết, nếu không chỉ xem đúng email này)
+        const urlParams = new URLSearchParams(window.location.search);
+        let allowedEmailFilter = urlParams.get('email') || '';
+
+        const emailListContainer = document.getElementById('emailListContainer');
+        const emailDetailPanel = document.getElementById('emailDetailPanel');
+        const searchInput = document.getElementById('searchInput');
+        const btnRefresh = document.getElementById('btnRefresh');
+        const btnClearInbox = document.getElementById('btnClearInbox');
+        const secureOverlay = document.getElementById('secureOverlay');
+        const secureVerifyForm = document.getElementById('secureVerifyForm');
+        const secureEmailInput = document.getElementById('secureEmailInput');
+        const roleBadge = document.getElementById('roleBadge');
+
+        // Khởi tạo trạng thái bảo mật ban đầu
+        function checkSecurityAccess() {
+            if (isAdminUser) {
+                // Admin: Cho phép xem toàn bộ
+                roleBadge.className = 'role-badge admin';
+                roleBadge.innerHTML = '<i class="fa-solid fa-user-check"></i> Quản trị viên (Xem toàn bộ)';
+                btnClearInbox.style.display = 'flex';
+                secureOverlay.style.display = 'none';
+            } else {
+                // User thường / Khách: Yêu cầu lọc theo email
+                roleBadge.className = 'role-badge';
+                roleBadge.innerHTML = '<i class="fa-solid fa-user-shield"></i> Khách (Chế độ xem giới hạn)';
+                btnClearInbox.style.display = 'none';
+
+                if (allowedEmailFilter) {
+                    secureOverlay.style.display = 'none';
+                } else {
+                    secureOverlay.style.display = 'flex';
+                }
+            }
+        }
+
+        // Xử lý xác nhận email tra cứu
+        secureVerifyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inputVal = secureEmailInput.value.trim().toLowerCase();
+            if (inputVal) {
+                allowedEmailFilter = inputVal;
+                secureOverlay.style.display = 'none';
+                fetchEmails();
+            }
+        });
+
+        // Tải danh sách email từ server
+        async function fetchEmails() {
+            try {
+                const response = await fetch('../../backend/public/mock_emails.json?t=' + Date.now());
+                if (!response.ok) {
+                    throw new Error("Không thể đọc file mock_emails.json");
+                }
+                allEmails = await response.json();
+                
+                // Áp dụng bộ lọc bảo mật nghiêm ngặt nếu không phải là admin
+                let filteredList = allEmails;
+                if (!isAdminUser) {
+                    filteredList = allEmails.filter(email => 
+                        email.to.toLowerCase() === allowedEmailFilter.toLowerCase()
+                    );
+                }
+                
+                renderEmailList(filteredList);
+                
+                // Nếu đang hiển thị mail thì load lại chi tiết
+                if (selectedEmailId) {
+                    const activeMail = filteredList.find(m => m.id === selectedEmailId);
+                    if (activeMail) {
+                        displayEmailDetail(activeMail);
+                    } else {
+                        resetDetailPanel();
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                emailListContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>Hòm thư trống.</p>
+                        <p style="font-size:0.75rem; margin-top:5px; color:var(--text-muted)">Các email hệ thống gửi đi sẽ xuất hiện tại đây.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render danh sách email
+        function renderEmailList(emails) {
+            if (!emails || emails.length === 0) {
+                emailListContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-box-open"></i>
+                        <p>Hòm thư trống.</p>
+                        <p style="font-size:0.75rem; margin-top:5px; color:var(--text-muted)">Không tìm thấy email nào gửi tới: <strong>${allowedEmailFilter || 'email của bạn'}</strong></p>
+                    </div>
+                `;
+                return;
+            }
+
+            emailListContainer.innerHTML = '';
+            emails.forEach(email => {
+                const item = document.createElement('div');
+                item.className = `email-item ${email.id === selectedEmailId ? 'active' : ''}`;
+                
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = email.body;
+                const textExcerpt = tempDiv.textContent || tempDiv.innerText || "";
+                
+                item.innerHTML = `
+                    <div class="email-item-header">
+                        <span class="recipient-badge" title="Tới: ${email.to}">To: ${email.to}</span>
+                        <span class="email-time">${formatTime(email.sent_at)}</span>
+                    </div>
+                    <div class="email-subject">${email.subject}</div>
+                    <div class="email-excerpt">${textExcerpt.substring(0, 50)}...</div>
+                `;
+
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.email-item').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    selectedEmailId = email.id;
+                    displayEmailDetail(email);
+                });
+
+                emailListContainer.appendChild(item);
+            });
+        }
+
+        // Hiển thị chi tiết email
+        function displayEmailDetail(email) {
+            // Kiểm tra bảo mật chéo (ngăn chặn bypass từ DOM/ID)
+            if (!isAdminUser && email.to.toLowerCase() !== allowedEmailFilter.toLowerCase()) {
+                resetDetailPanel();
+                alert("🔒 Lỗi bảo mật: Bạn không được phép xem nội dung thư này!");
+                return;
+            }
+
+            emailDetailPanel.innerHTML = `
+                <div class="email-content-card">
+                    <div class="email-header-info">
+                        <div class="email-detail-subject">${email.subject}</div>
+                        <div class="email-meta-row">
+                            <div class="email-sender-receiver">
+                                <div class="meta-line">Từ: <strong>${email.from_name}</strong> &lt;${email.from}&gt;</div>
+                                <div class="meta-line">Tới: <strong>&lt;${email.to}&gt;</strong></div>
+                            </div>
+                            <div class="email-detail-time">${email.sent_at}</div>
+                        </div>
+                    </div>
+                    <div class="email-body-container">
+                        <iframe id="mailFrame" class="mail-render-iframe" title="Email Body"></iframe>
+                    </div>
+                </div>
+            `;
+
+            const iframe = document.getElementById('mailFrame');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(email.body);
+            iframeDoc.close();
+        }
+
+        function resetDetailPanel() {
+            selectedEmailId = null;
+            emailDetailPanel.innerHTML = `
+                <div class="no-email-selected">
+                    <i class="fa-regular fa-envelope"></i>
+                    <p style="font-weight: 600;">Chọn một email từ danh sách bên trái để đọc nội dung</p>
+                </div>
+            `;
+        }
+
+        function formatTime(dateTimeStr) {
+            try {
+                const parts = dateTimeStr.split(' ');
+                const dateParts = parts[0].split('-');
+                const timeParts = parts[1].split(':');
+                return `${timeParts[0]}:${timeParts[1]} - ${dateParts[2]}/${dateParts[1]}`;
+            } catch (e) {
+                return dateTimeStr;
+            }
+        }
+
+        // Tìm kiếm
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            let sourceList = allEmails;
+            
+            if (!isAdminUser) {
+                sourceList = allEmails.filter(email => email.to.toLowerCase() === allowedEmailFilter.toLowerCase());
+            }
+
+            const filtered = sourceList.filter(email => {
+                return email.subject.toLowerCase().includes(query) || email.body.toLowerCase().includes(query);
+            });
+            renderEmailList(filtered);
+        });
+
+        // Làm mới
+        btnRefresh.addEventListener('click', () => {
+            btnRefresh.innerHTML = '<i class="fa-solid fa-rotate fa-spin"></i> Đang tải...';
+            fetchEmails().finally(() => {
+                btnRefresh.innerHTML = '<i class="fa-solid fa-rotate"></i> Làm mới';
+            });
+        });
+
+        // Admin xóa hộp thư
+        if (isAdminUser) {
+            btnClearInbox.addEventListener('click', async () => {
+                if (!confirm('Bạn có chắc chắn muốn xóa tất cả lịch sử email đã nhận trong Trình giả lập này không?')) {
+                    return;
+                }
+                
+                btnClearInbox.disabled = true;
+                btnClearInbox.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xóa...';
+                
+                try {
+                    const response = await fetch('../../backend/public/index.php/mock-emails/clear', {
+                        method: 'POST'
+                    });
+                    await fetchEmails();
+                    resetDetailPanel();
+                    alert('Đã dọn dẹp hòm thư giả lập thành công!');
+                } catch (e) {
+                    console.error(e);
+                    await fetchEmails();
+                } finally {
+                    btnClearInbox.disabled = false;
+                    btnClearInbox.innerHTML = '<i class="fa-regular fa-trash-can"></i> Xóa tất cả thư';
+                }
+            });
+        }
+
+        // Chạy kiểm tra bảo mật
+        checkSecurityAccess();
+        if (isAdminUser || allowedEmailFilter) {
+            fetchEmails();
+            // Tự động làm mới mỗi 10 giây
+            setInterval(fetchEmails, 10000);
+        }
+    </script>
+</body>
+</html>
