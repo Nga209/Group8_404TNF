@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | CampusBook</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="stylesheet" href="../assets/css/login.css?v=11.1">
+</head>
+<body>
+
+    <div class="pro-login-page">
+        <div class="main-overlay"></div>
+
+        <div class="content-container">
+            <div class="text-hero">
+                <div class="brand-tag">Nền tảng quản lý số 1 Campus</div>
+                <h1>Khơi nguồn tri thức <br><span>Chinh phục không gian</span></h1>
+                <p>Hệ thống giúp bạn kết nối nhanh nhất tới các phòng nghiên cứu và thiết bị hiện đại.</p>
+                
+                <div class="stat-group">
+                    <div class="stat-box"><strong>24/7</strong><span>Sẵn sàng</span></div>
+                    <div class="stat-box"><strong>5s</strong><span>Phê duyệt</span></div>
+                    <div class="stat-box"><strong>100%</strong><span>Minh bạch</span></div>
+                </div>
+            </div>
+
+            <div class="login-card-floating">
+                <div class="form-tabs" style="display: flex; justify-content: space-around; margin-bottom: 25px; border-bottom: 2px solid rgba(0,0,0,0.06); padding-bottom: 10px;">
+                    <button id="tab-login" class="tab-btn active" style="background: none; border: none; font-size: 1.1rem; font-weight: 700; color: #8FA8FF; cursor: pointer; border-bottom: 2px solid #8FA8FF; padding-bottom: 10px; margin-bottom: -12px;">Đăng Nhập</button>
+                    <button id="tab-register" class="tab-btn" style="background: none; border: none; font-size: 1.1rem; font-weight: 700; color: #64748b; cursor: pointer; padding-bottom: 10px; margin-bottom: -12px;">Đăng Ký</button>
+                </div>
+
+                <div id="errorMsg" class="error-banner" style="display: none; background: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; border: 1px solid #fecaca;"></div>
+                <div id="successMsg" class="success-banner" style="display: none; background: #d1fae5; color: #065f46; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; border: 1px solid #a7f3d0;"></div>
+
+                <!-- Form đăng nhập -->
+                <form id="loginForm">
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-user-shield"></i> BẠN LÀ AI?</label>
+                        <select name="role" id="role">
+                            <option value="user">Sinh viên (User)</option>
+                            <option value="teacher">Giảng viên (Teacher)</option>
+                            <option value="admin">Quản trị viên (Admin)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-envelope"></i> EMAIL TÀI KHOẢN</label>
+                        <input type="email" name="email" id="email" placeholder="user@campus.edu.vn" required>
+                    </div>
+
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-lock"></i> MẬT KHẨU</label>
+                        <div class="pass-wrapper" style="position: relative; display: flex; align-items: center;">
+                            <input type="password" name="password" id="password" placeholder="••••••••" required style="width: 100%; padding-right: 45px;">
+                            <i class="fa-solid fa-eye-slash" id="togglePass" style="position: absolute; right: 15px; cursor: pointer; color: #64748b; transition: 0.3s; z-index: 10;"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-main-login" id="submitBtn">
+                        <span class="btn-text">Đăng Nhập Ngay</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+
+                <!-- Form đăng ký -->
+                <form id="registerForm" style="display: none;">
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-user"></i> HỌ VÀ TÊN</label>
+                        <input type="text" id="reg-fullname" placeholder="Nguyễn Văn A" required>
+                    </div>
+
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-address-card"></i> TÊN ĐĂNG NHẬP</label>
+                        <input type="text" id="reg-username" placeholder="sv_nguyenvana" required>
+                    </div>
+
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-envelope"></i> EMAIL TÀI KHOẢN</label>
+                        <input type="email" id="reg-email" placeholder="vana@campus.edu.vn" required>
+                    </div>
+
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-lock"></i> MẬT KHẨU</label>
+                        <input type="password" id="reg-password" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="input-field">
+                        <label><i class="fa-solid fa-user-shield"></i> VAI TRÒ ĐĂNG KÝ</label>
+                        <select id="reg-role">
+                            <option value="user">Sinh viên (User)</option>
+                            <option value="teacher">Giảng viên (Teacher)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-main-login" id="submitRegBtn" style="margin-top: 15px;">
+                        <span class="btn-text">Đăng Ký Tài Khoản</span>
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </form>
+
+                <div class="form-links">
+                    <a href="javascript:void(0)" id="forgotPassLink"><i class="fa-solid fa-key"></i> Quên mật khẩu?</a>
+                    <a href="../index/index.html"><i class="fa-solid fa-house"></i> Về Trang chủ</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal quên mật khẩu -->
+        <div id="forgotModal" class="forgot-modal" style="display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;">
+            <div class="forgot-content" style="background: white; padding: 35px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); position: relative; transform: translateY(-20px); transition: transform 0.3s ease;">
+                <button type="button" id="closeForgotBtn" style="position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: #64748b; font-size: 16px; font-weight: bold; transition: 0.2s;"><i class="fa-solid fa-xmark"></i></button>
+                <h3 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-top: 0; margin-bottom: 10px; letter-spacing: -0.5px;">Quên Mật Khẩu?</h3>
+                <p id="forgotDesc" style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px; font-weight: 550; line-height: 1.5;">Nhập email tài khoản của bạn. Hệ thống sẽ gửi một mã OTP xác nhận trực tiếp tới Gmail của bạn để đặt lại mật khẩu.<br><span style="font-size: 0.8rem; color: #8FA8FF; font-weight: 600; display: inline-block; margin-top: 5px;"><i class="fa-solid fa-circle-info"></i> Xem thư đã gửi tại <a href="mock-inbox.html" target="_blank" style="text-decoration: underline; color: #8FA8FF;">Trình giả lập Hòm thư</a>.</span></p>
+                
+                <div id="forgotErrorMsg" style="display: none; background: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; font-weight: 600; border: 1px solid #fecaca;"></div>
+                <div id="forgotSuccessMsg" style="display: none; background: #d1fae5; color: #065f46; padding: 15px; border-radius: 12px; margin-bottom: 15px; font-size: 0.9rem; border: 1px solid #a7f3d0; line-height: 1.6;"></div>
+                
+                <!-- Bước 1: Nhập email gửi OTP -->
+                <form id="forgotForm">
+                    <div class="input-field" style="margin-bottom: 20px; display: flex; flex-direction: column;">
+                        <label style="display: block; font-weight: 700; font-size: 0.8rem; color: #334155; margin-bottom: 8px; text-transform: uppercase;"><i class="fa-solid fa-envelope"></i> EMAIL TÀI KHOẢN</label>
+                        <input type="email" id="forgot-email" placeholder="sv_huyen@campus.edu.vn" required style="width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; font-size: 0.95rem; font-family: inherit;">
+                    </div>
+                    <button type="submit" id="btnForgotSubmit" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #A5B4FF 0%, #8FD3FE 100%); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(143, 168, 255, 0.25); transition: 0.3s; color: white !important;">
+                        <span>Lấy Mã Xác Nhận</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+
+                <!-- Bước 2: Nhập OTP và Mật khẩu mới -->
+                <form id="resetPasswordForm" style="display: none;">
+                    <div class="input-field" style="margin-bottom: 15px; display: flex; flex-direction: column;">
+                        <label style="display: block; font-weight: 700; font-size: 0.8rem; color: #334155; margin-bottom: 8px; text-transform: uppercase;"><i class="fa-solid fa-key"></i> MÃ OTP XÁC NHẬN (6 số)</label>
+                        <input type="text" id="reset-otp" placeholder="123456" pattern="\d{6}" maxlength="6" required style="width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; font-size: 1.1rem; font-family: monospace; font-weight: 700; text-align: center; letter-spacing: 5px;">
+                    </div>
+                    <div class="input-field" style="margin-bottom: 15px; display: flex; flex-direction: column;">
+                        <label style="display: block; font-weight: 700; font-size: 0.8rem; color: #334155; margin-bottom: 8px; text-transform: uppercase;"><i class="fa-solid fa-lock"></i> MẬT KHẨU MỚI</label>
+                        <input type="password" id="reset-new-password" placeholder="••••••••" required style="width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; font-size: 0.95rem; font-family: inherit;">
+                    </div>
+                    <div class="input-field" style="margin-bottom: 20px; display: flex; flex-direction: column;">
+                        <label style="display: block; font-weight: 700; font-size: 0.8rem; color: #334155; margin-bottom: 8px; text-transform: uppercase;"><i class="fa-solid fa-check-double"></i> XÁC NHẬN MẬT KHẨU MỚI</label>
+                        <input type="password" id="reset-confirm-password" placeholder="••••••••" required style="width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; font-size: 0.95rem; font-family: inherit;">
+                    </div>
+                    
+                    <button type="submit" id="btnResetPasswordSubmit" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #A5B4FF 0%, #8FD3FE 100%); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(143, 168, 255, 0.25); transition: 0.3s; color: white !important;">
+                        <span>Đặt Lại Mật Khẩu</span>
+                        <i class="fa-solid fa-circle-check"></i>
+                    </button>
+                    
+                    <div style="text-align: center; margin-top: 15px;">
+                        <a href="javascript:void(0)" id="backToEmailBtn" style="font-size: 0.85rem; color: #64748b; text-decoration: none; font-weight: 600;"><i class="fa-solid fa-arrow-left"></i> Quay lại nhập email</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../assets/js/api.js?v=1.1"></script>
+    <script src="../assets/js/auth.js?v=1.1"></script>
+
+
+
+    <script>
+        const roleSelect = document.getElementById('role');
+        const emailInput = document.getElementById('email');
+        const passInput = document.getElementById('password');
+        const togglePass = document.getElementById('togglePass');
+        const errorMsg = document.getElementById('errorMsg');
+        const successMsg = document.getElementById('successMsg');
+        const submitBtn = document.getElementById('submitBtn');
+
+        const tabLogin = document.getElementById('tab-login');
+        const tabRegister = document.getElementById('tab-register');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        // Tab switching logic
+        tabLogin.addEventListener('click', () => {
+            tabLogin.style.color = '#8FA8FF';
+            tabLogin.style.borderBottom = '2px solid #8FA8FF';
+            tabRegister.style.color = '#64748b';
+            tabRegister.style.borderBottom = 'none';
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+        });
+
+        tabRegister.addEventListener('click', () => {
+            tabRegister.style.color = '#8FA8FF';
+            tabRegister.style.borderBottom = '2px solid #8FA8FF';
+            tabLogin.style.color = '#64748b';
+            tabLogin.style.borderBottom = 'none';
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+        });
+
+        // 1. Ẩn hiện mật khẩu
+        togglePass.addEventListener('click', () => {
+            const isPassword = passInput.type === 'password';
+            passInput.type = isPassword ? 'text' : 'password';
+            if (isPassword) {
+                togglePass.classList.replace('fa-eye-slash', 'fa-eye');
+                togglePass.style.color = '#8FA8FF';
+            } else {
+                togglePass.classList.replace('fa-eye', 'fa-eye-slash');
+                togglePass.style.color = '#64748b';
+            }
+        });
+
+        // 2. Placeholder thông minh
+        roleSelect.addEventListener('change', function() {
+            emailInput.placeholder = `${this.value}@campus.edu.vn`;
+        });
+
+        // 3. Xử lý Đăng nhập
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            submitBtn.disabled = true;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đăng nhập...';
+
+            const email = emailInput.value;
+            const password = passInput.value;
+            const role = roleSelect.value;
+
+            const result = await xuLyDangNhap(email, password, role);
+
+            if (!result.success) {
+                if (result.message && result.message.includes("Tài khoản không tồn tại")) {
+                    errorMsg.innerHTML = `
+                        ❌ ${result.message}<br>
+                        <a href="javascript:void(0)" id="switch-to-register-login-error" style="color: #8FA8FF; font-weight: 700; text-decoration: underline; display: inline-block; margin-top: 6px;">Đăng ký tài khoản mới ngay</a>
+                    `;
+                    errorMsg.style.display = 'block';
+                    
+                    document.getElementById('switch-to-register-login-error').addEventListener('click', () => {
+                        tabRegister.click();
+                        document.getElementById('reg-email').value = email;
+                    });
+                } else {
+                    errorMsg.innerText = "❌ " + result.message;
+                    errorMsg.style.display = 'block';
+                }
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // 4. Xử lý Đăng ký
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            const submitRegBtn = document.getElementById('submitRegBtn');
+            submitRegBtn.disabled = true;
+            const originalText = submitRegBtn.innerHTML;
+            submitRegBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đăng ký...';
+
+            const fullname = document.getElementById('reg-fullname').value;
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const role = document.getElementById('reg-role').value;
+
+            const result = await xuLyDangKy(username, email, password, fullname, role);
+
+            submitRegBtn.innerHTML = originalText;
+            submitRegBtn.disabled = false;
+
+            if (result.success) {
+                successMsg.innerText = "✅ " + result.message + " Hãy đăng nhập ngay.";
+                successMsg.style.display = 'block';
+                registerForm.reset();
+                // Tự động chuyển về tab đăng nhập
+                setTimeout(() => {
+                    tabLogin.click();
+                    emailInput.value = email;
+                    passInput.value = password;
+                    roleSelect.value = role;
+                }, 1500);
+            } else {
+                errorMsg.innerText = "❌ " + result.message;
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // ==========================================
+        // LOGIC QUÊN MẬT KHẨU (MODAL & AJAX)
+        // ==========================================
+        const forgotLink = document.getElementById('forgotPassLink');
+        const forgotModal = document.getElementById('forgotModal');
+        const closeForgotBtn = document.getElementById('closeForgotBtn');
+        const forgotForm = document.getElementById('forgotForm');
+        const resetPasswordForm = document.getElementById('resetPasswordForm');
+        const forgotEmail = document.getElementById('forgot-email');
+        const forgotError = document.getElementById('forgotErrorMsg');
+        const forgotSuccess = document.getElementById('forgotSuccessMsg');
+        const btnForgotSubmit = document.getElementById('btnForgotSubmit');
+        const btnResetPasswordSubmit = document.getElementById('btnResetPasswordSubmit');
+        const backToEmailBtn = document.getElementById('backToEmailBtn');
+        const forgotDesc = document.getElementById('forgotDesc');
+
+        function openForgotModal() {
+            forgotModal.style.display = 'flex';
+            // Force reflow
+            forgotModal.offsetHeight;
+            forgotModal.style.opacity = '1';
+            forgotModal.style.pointerEvents = 'auto';
+            forgotModal.querySelector('.forgot-content').style.transform = 'translateY(0)';
+            
+            // Khởi tạo trạng thái ban đầu
+            forgotForm.style.display = 'block';
+            resetPasswordForm.style.display = 'none';
+            forgotDesc.style.display = 'block';
+            forgotError.style.display = 'none';
+            forgotSuccess.style.display = 'none';
+            forgotEmail.focus();
+        }
+
+        function closeForgotModal() {
+            forgotModal.style.opacity = '0';
+            forgotModal.style.pointerEvents = 'none';
+            forgotModal.querySelector('.forgot-content').style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                forgotModal.style.display = 'none';
+                forgotForm.reset();
+                resetPasswordForm.reset();
+                forgotForm.style.display = 'block';
+                resetPasswordForm.style.display = 'none';
+                forgotDesc.style.display = 'block';
+                forgotError.style.display = 'none';
+                forgotSuccess.style.display = 'none';
+            }, 300);
+        }
+
+        forgotLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openForgotModal();
+        });
+
+        closeForgotBtn.addEventListener('click', closeForgotModal);
+        
+        forgotModal.addEventListener('click', (e) => {
+            if (e.target === forgotModal) {
+                closeForgotModal();
+            }
+        });
+
+        // Cập nhật link Hòm thư giả lập theo Email thời gian thực để bảo mật
+        forgotEmail.addEventListener('input', () => {
+            const email = forgotEmail.value.trim();
+            const link = document.querySelector('#forgotDesc a');
+            if (link) {
+                link.href = email ? `mock-inbox.html?email=${encodeURIComponent(email)}` : 'mock-inbox.html';
+            }
+        });
+
+        // B1: Gửi mã OTP xác nhận
+        forgotForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            forgotError.style.display = 'none';
+            forgotSuccess.style.display = 'none';
+
+            btnForgotSubmit.disabled = true;
+            const originalText = btnForgotSubmit.innerHTML;
+            btnForgotSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi mã...';
+
+            const email = forgotEmail.value;
+
+            try {
+                const result = await goiApi('/forgot-password', 'POST', { email });
+                btnForgotSubmit.innerHTML = originalText;
+                btnForgotSubmit.disabled = false;
+
+                if (result.status === 'success') {
+                    // Chuyển sang form nhập OTP & mật khẩu mới
+                    forgotForm.style.display = 'none';
+                    resetPasswordForm.style.display = 'block';
+                    forgotDesc.style.display = 'none';
+
+                    if (result.mode === 'mock') {
+                        forgotSuccess.innerHTML = `
+                            <strong>⚠️ Chế độ Thử nghiệm:</strong><br>
+                            Yêu cầu đổi mật khẩu đã được ghi nhận.<br>
+                            Vui lòng mở <a href="mock-inbox.html?email=${encodeURIComponent(email)}" target="_blank" style="text-decoration: underline; color: #2563eb; font-weight: 700;"><i class="fa-solid fa-envelope-open-text"></i> Trình giả lập Hòm thư</a> để nhận thư và lấy mã OTP của bạn.
+                        `;
+                    } else {
+                        forgotSuccess.innerHTML = `
+                            <strong>Đã gửi mã xác thực!</strong><br>
+                            Mã OTP gồm 6 chữ số đã được gửi trực tiếp đến Gmail của bạn. Vui lòng kiểm tra hộp thư đến (và mục spam).
+                        `;
+                    }
+                    forgotSuccess.style.display = 'block';
+                } else {
+                    if (result.message && result.message.includes("Không tìm thấy tài khoản nào")) {
+                        forgotError.innerHTML = `
+                            ❌ ${result.message}<br>
+                            <a href="javascript:void(0)" id="switch-to-register-link" style="color: #3b82f6; font-weight: 700; text-decoration: underline; display: inline-block; margin-top: 6px;">Đăng ký tài khoản mới ngay</a>
+                        `;
+                        forgotError.style.display = 'block';
+                        
+                        document.getElementById('switch-to-register-link').addEventListener('click', () => {
+                            closeForgotModal();
+                            tabRegister.click();
+                            document.getElementById('reg-email').value = email;
+                        });
+                    } else {
+                        forgotError.innerText = "❌ " + result.message;
+                        forgotError.style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                forgotError.innerText = "❌ Lỗi kết nối hệ thống.";
+                forgotError.style.display = 'block';
+                btnForgotSubmit.innerHTML = originalText;
+                btnForgotSubmit.disabled = false;
+            }
+        });
+
+        // B2: Đặt lại mật khẩu mới với OTP
+        resetPasswordForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            forgotError.style.display = 'none';
+            
+            const email = forgotEmail.value;
+            const code = document.getElementById('reset-otp').value;
+            const newPassword = document.getElementById('reset-new-password').value;
+            const confirmPassword = document.getElementById('reset-confirm-password').value;
+
+            if (newPassword !== confirmPassword) {
+                forgotError.innerText = "❌ Mật khẩu mới và mật khẩu xác nhận không khớp!";
+                forgotError.style.display = 'block';
+                return;
+            }
+
+            btnResetPasswordSubmit.disabled = true;
+            const originalText = btnResetPasswordSubmit.innerHTML;
+            btnResetPasswordSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật...';
+
+            try {
+                const result = await goiApi('/reset-password', 'POST', { email, code, password: newPassword });
+                btnResetPasswordSubmit.innerHTML = originalText;
+                btnResetPasswordSubmit.disabled = false;
+
+                if (result.status === 'success') {
+                    forgotSuccess.innerHTML = `
+                        <strong>Thành công!</strong><br>
+                        ${result.message}
+                    `;
+                    forgotSuccess.style.display = 'block';
+                    resetPasswordForm.style.display = 'none';
+
+                    // Chuyển email và mật khẩu về trang đăng nhập để người dùng tiện đăng nhập
+                    emailInput.value = email;
+                    passInput.value = newPassword;
+
+                    // Đóng modal sau 2.5 giây
+                    setTimeout(() => {
+                        closeForgotModal();
+                        passInput.focus();
+                    }, 2500);
+                } else {
+                    forgotError.innerText = "❌ " + result.message;
+                    forgotError.style.display = 'block';
+                }
+            } catch (err) {
+                forgotError.innerText = "❌ Lỗi kết nối hệ thống.";
+                forgotError.style.display = 'block';
+                btnResetPasswordSubmit.innerHTML = originalText;
+                btnResetPasswordSubmit.disabled = false;
+            }
+        });
+
+        // Nút quay lại nhập email
+        backToEmailBtn.addEventListener('click', () => {
+            forgotForm.style.display = 'block';
+            resetPasswordForm.style.display = 'none';
+            forgotDesc.style.display = 'block';
+            forgotError.style.display = 'none';
+            forgotSuccess.style.display = 'none';
+            forgotEmail.focus();
+        });
+    </script>
+</body>
+</html>
