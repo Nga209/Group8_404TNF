@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Hệ Thống Quản Lý | CampusBook</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css?v=17.0">
+    <style>
+        .bg-warning-light { background: #fffbeb !important; color: #d97706 !important; }
+        .bg-danger-light { background: #fdf2f2 !important; color: #ef4444 !important; }
+        
+        /* Resource Types Custom Icon Badges */
+        .res-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .res-sport {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid rgba(22, 163, 74, 0.12);
+        }
+        .res-lab {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid rgba(37, 99, 235, 0.12);
+        }
+        .res-hall {
+            background: #faf5ff;
+            color: #7c3aed;
+            border: 1px solid rgba(124, 58, 237, 0.12);
+        }
+        .res-default {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid rgba(71, 85, 105, 0.12);
+        }
+        
+        /* Rank Badge Styles */
+        .rank-badge.rank-1 { background: #fef3c7 !important; color: #d97706 !important; border: 1px solid rgba(217, 119, 6, 0.2) !important; }
+        .rank-badge.rank-2 { background: #f1f5f9 !important; color: #475569 !important; border: 1px solid rgba(71, 85, 105, 0.2) !important; }
+        .rank-badge.rank-3 { background: #ffedd5 !important; color: #ea580c !important; border: 1px solid rgba(234, 88, 12, 0.2) !important; }
+    </style>
+</head>
+
+<body>
+
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+        <!-- Header -->
+        <header class="premium-header">
+            <div class="header-info">
+                <h1>Chào mừng bạn quay lại, Admin! ✨</h1>
+                <p>Tổng quan hệ thống hôm nay đã được cập nhật. Cùng xem nhanh những hoạt động mới nhất nhé.</p>
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card" onclick="goToApprovals('all', true)">
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.08); color: #8b5cf6;"><i
+                        class="fas fa-layer-group"></i></div>
+                <span id="tong-don-dat" class="stat-val">38</span>
+                <span class="stat-label">Tổng đơn đặt (Tháng này)</span>
+            </div>
+            <div class="stat-card" onclick="goToApprovals('pending', false)">
+                <div class="stat-icon" style="background: #fffbeb; color: #d97706;"><i
+                        class="fas fa-hourglass-half"></i></div>
+                <span id="don-cho-duyet" class="stat-val">05</span>
+                <span class="stat-label">Đang chờ duyệt (Toàn bộ)</span>
+            </div>
+            <div class="stat-card" onclick="goToApprovals('approved', true)">
+                <div class="stat-icon" style="background: #ecfdf5; color: #059669;"><i class="fas fa-check-double"></i>
+                </div>
+                <span id="so-tai-nguyen" class="stat-val">32</span>
+                <span class="stat-label">Đã hoàn thành (Tháng này)</span>
+            </div>
+            <div class="stat-card" onclick="window.location.href='users.html'">
+                <div class="stat-icon" style="background: #fdf2f2; color: #dc2626;"><i class="fas fa-user-check"></i>
+                </div>
+                <span id="so-nguoi-dung" class="stat-val">0</span>
+                <span class="stat-label">Người dùng mới</span>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Left Column: Chart & Top Resources -->
+            <div style="display: flex; flex-direction: column; gap: 25px;">
+                <!-- Chart -->
+                <div class="glass-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-chart-line" style="color: var(--primary);"></i> Thống kê
+                            tuần này</div>
+                    </div>
+                    <div style="height: 300px;"><canvas id="proChart"></canvas></div>
+                </div>
+
+                <!-- Top Resources -->
+                <div class="glass-card">
+                    <div class="card-title" style="margin-bottom: 20px;">
+                        <i class="fas fa-fire" style="color: #ef4444;"></i> Tài nguyên được đặt nhiều nhất
+                    </div>
+                    <div id="top-resources-list" style="display: flex; flex-direction: column; gap: 16px;">
+                        <p style="text-align: center; color: #94a3b8; padding: 20px;">Đang tải bảng xếp hạng...</p>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- Recent -->
+            <div class="glass-card">
+                <div class="card-title" style="margin-bottom: 20px;"><i class="fas fa-bolt"
+                        style="color: var(--warning);"></i> Gần đây</div>
+                <div id="recent-activity-list" class="activity-list">
+                    <!-- Dữ liệu thật sẽ được nạp vào đây bởi dashboard.js -->
+                    <p style="text-align: center; color: #94a3b8; padding: 20px;">Đang tải hoạt động...</p>
+                </div>
+                <button
+                    onclick="window.location.href='reports.html'"
+                    style="width: 100%; margin-top: 20px; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; font-weight: 700; cursor: pointer; transition: 0.2s;"
+                    onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">Xem tất cả
+                    báo cáo</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js?v=3.1"></script>
+    <script src="../assets/js/auth.js?v=3.1"></script>
+    <script src="../assets/js/components.js?v=20.1"></script>
+    <script src="../assets/js/dashboard.js?v=12.0"></script>
+    <script>
+        function goToApprovals(status, filterMonth) {
+            let url = `approvals.html?status=${status}`;
+            if (filterMonth) {
+                const today = new Date();
+                const monthStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+                url += `&month=${monthStr}`;
+            }
+            url += `&_t=${Date.now()}`;
+            window.location.href = url;
+        }
+
+        // Load Sidebar
+        if (typeof loadSidebar === 'function') loadSidebar('dashboard');
+        if (typeof baoVeTrang === 'function') baoVeTrang(['admin', 'teacher']);
+    </script>
+</body>
+
+</html>
