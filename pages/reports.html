@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo Tổng hợp | CampusBook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="../assets/css/resources.css?v=13.0">
+    <link rel="stylesheet" href="../assets/css/reports.css?v=15.0">
+</head>
+<body>
+
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+        <header class="header-center">
+            <p class="top-badge-v2">BÁO CÁO HỆ THỐNG</p>
+            <h1 class="section-title">Báo Cáo Tổng Quan</h1>
+            <p class="sub-text" style="margin-bottom: 15px;">Theo dõi và đánh giá hiệu suất vận hành campus thời gian thực.</p>
+            
+            <div class="filter-wrapper" style="margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <label for="month-filter" style="font-weight: 700; color: var(--slate); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Chọn tháng:</label>
+                <input type="month" id="month-filter" style="padding: 8px 16px; border-radius: 12px; border: 1.5px solid #E2E8F0; font-family: inherit; font-size: 0.9rem; font-weight: 600; color: var(--dark); outline: none; background-color: #fff; box-shadow: 0 4px 12px rgba(100, 120, 160, 0.04); transition: all 0.2s ease-in-out; cursor: pointer;">
+            </div>
+
+            <button class="btn-export" onclick="window.print()" style="margin: 0 auto 20px auto;">
+                <i class="fas fa-cloud-download-alt"></i> Xuất Báo cáo
+            </button>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card" onclick="goToApprovalsFromReport('all')">
+                <div class="icon-circle" style="background: var(--primary-light); color: var(--primary);"><i class="fas fa-layer-group"></i></div>
+                <div class="stat-label">Tổng đơn đặt (Tháng chọn)</div>
+                <div id="stat-total" class="stat-value">0</div>
+                <div id="stat-growth" class="stat-trend"></div>
+            </div>
+            <div class="stat-card" onclick="goToApprovalsFromReport('approved')">
+                <div class="icon-circle" style="background: var(--success-light); color: var(--success);"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-label">Đã phê duyệt (Tháng chọn)</div>
+                <div id="stat-approved" class="stat-value">0</div>
+                <div class="stat-trend" style="color: var(--success)">Dữ liệu chuẩn</div>
+            </div>
+            <div class="stat-card" onclick="goToApprovalsFromReport('pending')">
+                <div class="icon-circle" style="background: var(--warning-light); color: var(--warning);"><i class="fas fa-clock"></i></div>
+                <div class="stat-label">Đang chờ (Tháng chọn)</div>
+                <div id="stat-pending" class="stat-value">0</div>
+                <div class="stat-trend" style="color: var(--warning)">Cần xử lý ngay</div>
+            </div>
+            <div class="stat-card" onclick="goToApprovalsFromReport('rejected')">
+                <div class="icon-circle" style="background: var(--danger-light); color: var(--danger);"><i class="fas fa-times-circle"></i></div>
+                <div class="stat-label">Từ chối (Tháng chọn)</div>
+                <div id="stat-rejected" class="stat-value">0</div>
+                <div class="stat-trend" style="color: var(--slate)">Theo chính sách</div>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <!-- Left: Resource Chart -->
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar" style="color: var(--primary)"></i> Hiệu suất mượn phòng & sân</h3>
+                <div style="height: 350px;"><canvas id="resourceChart"></canvas></div>
+            </div>
+
+            <!-- Right: Response Chart -->
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie" style="color: var(--success)"></i> Tỉ lệ phản hồi đơn</h3>
+                <div style="height: 350px;"><canvas id="responseChart"></canvas></div>
+            </div>
+
+            <!-- Bottom: Performance Analysis -->
+            <div class="chart-card perf-summary">
+                <div class="perf-item">
+                    <div id="perf-rate" class="perf-val" style="color: var(--success);">0%</div>
+                    <div class="perf-label">Tỉ lệ hoàn thành</div>
+                </div>
+                <div class="perf-item">
+                    <div id="perf-status" class="perf-val" style="color: var(--primary);">TỐT</div>
+                    <div class="perf-label">Đánh giá vận hành</div>
+                </div>
+                <div class="perf-item" style="flex: 1.5; padding-left: 20px;">
+                    <div style="color: var(--slate); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px;">Xu hướng đặt phòng (7 ngày qua)</div>
+                    <div style="height: 100px;"><canvas id="trendChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- NEW: Slot Heatmap Card -->
+            <div class="chart-card" style="grid-column: 1 / -1;">
+                <h3 style="margin-bottom: 20px;">
+                    <i class="fas fa-fire" style="color: var(--warning)"></i>
+                    Tần suất sử dụng theo Khung giờ (<span id="current-month-label">Tháng hiện tại</span>)
+                    <span style="float: right; display: flex; gap: 15px; font-size: 0.85rem; font-weight: 600;">
+                        <span><i class="fas fa-circle" style="color: #ef4444"></i> Giờ cao điểm</span>
+                        <span><i class="fas fa-circle" style="color: #8b5cf6"></i> Giờ bình thường</span>
+                    </span>
+                </h3>
+                <div style="height: 300px;"><canvas id="slotChart"></canvas></div>
+                <div id="slot-insight" style="margin-top: 20px; padding: 15px 20px; background: #f8fafc; border-radius: 15px; font-size: 0.9rem; color: var(--slate); font-weight: 600;"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/components.js?v=20.0"></script>
+    
+    <script>
+        function goToApprovalsFromReport(status) {
+            const monthFilter = document.getElementById('month-filter');
+            const selectedMonth = monthFilter ? monthFilter.value : '';
+            let url = `approvals.html?status=${status}`;
+            if (selectedMonth) {
+                url += `&month=${selectedMonth}`;
+            }
+            window.location.href = url;
+        }
+
+        loadSidebar('reports');
+        baoVeTrang(['admin', 'teacher']);
+
+        let resourceChartInstance = null;
+        let responseChartInstance = null;
+        let trendChartInstance = null;
+        let slotChartInstance = null;
+
+        async function initReport(selectedMonth = '') {
+            // 1. Gọi API lấy dữ liệu thực tế
+            let url = '/admin/stats';
+            if (selectedMonth) {
+                url += `?month=${selectedMonth}`;
+            }
+            const response = await goiApi(url);
+            if (response.status !== 'success') return;
+            const data = response.data;
+
+            // Cập nhật nhãn tháng trên tiêu đề biểu đồ khung giờ
+            const monthLabel = document.getElementById('current-month-label');
+            if (monthLabel) {
+                const monthFilter = document.getElementById('month-filter');
+                if (monthFilter && monthFilter.value) {
+                    const [y, m] = monthFilter.value.split('-');
+                    monthLabel.innerText = `Tháng ${m}/${y}`;
+                } else {
+                    monthLabel.innerText = 'Tháng hiện tại';
+                }
+            }
+
+            // 2. Cập nhật 4 thẻ thống kê
+            document.getElementById('stat-total').innerText = data.overview.total_bookings.toLocaleString();
+            document.getElementById('stat-approved').innerText = data.overview.approved_requests.toLocaleString();
+            document.getElementById('stat-pending').innerText = data.overview.pending_requests.toLocaleString();
+            document.getElementById('stat-rejected').innerText = data.overview.rejected_requests.toLocaleString();
+
+            // Tính toán tăng trưởng ngày
+            const todayCount = data.overview.today_count || 0;
+            const yesterdayCount = data.overview.yesterday_count || 0;
+            const growthElem = document.getElementById('stat-growth');
+            
+            if (yesterdayCount === 0) {
+                growthElem.innerHTML = `<span style="color: var(--success)"><i class="fas fa-arrow-up"></i> ${todayCount > 0 ? 'Tăng trưởng' : 'Ổn định'}</span>`;
+            } else {
+                const diff = ((todayCount - yesterdayCount) / yesterdayCount) * 100;
+                const isUp = diff >= 0;
+                growthElem.innerHTML = `
+                    <span style="color: ${isUp ? 'var(--success)' : 'var(--danger)'}">
+                        <i class="fas fa-arrow-${isUp ? 'up' : 'down'}"></i> 
+                        ${Math.abs(Math.round(diff))}% so với hôm qua
+                    </span>
+                `;
+            }
+
+            // 3. Biểu đồ cột: Hiệu suất mượn phòng & sân (Top Resources)
+            const resLabels = data.top_resources ? data.top_resources.map(r => r.name) : [];
+            const resValues = data.top_resources ? data.top_resources.map(r => r.total_usage) : [];
+
+            const ctxBar = document.getElementById('resourceChart').getContext('2d');
+            const barGradient = ctxBar.createLinearGradient(0, 0, 0, 300);
+            barGradient.addColorStop(0, '#6366f1');
+            barGradient.addColorStop(1, 'rgba(99, 102, 241, 0.4)');
+
+            if (resourceChartInstance) {
+                resourceChartInstance.destroy();
+            }
+            resourceChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: resLabels,
+                    datasets: [{
+                        label: 'Số lượt mượn',
+                        data: resValues,
+                        backgroundColor: barGradient,
+                        borderRadius: 6,
+                        barThickness: 24
+                    }]
+                },
+                options: { 
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: '600' },
+                            bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                            padding: 12,
+                            displayColors: false,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { 
+                                color: 'rgba(226, 232, 240, 0.8)', 
+                                drawBorder: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                precision: 0,
+                                stepSize: 1,
+                                font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '550' },
+                                color: '#64748b'
+                            }
+                        }, 
+                        x: { 
+                            grid: { display: false },
+                            ticks: {
+                                maxRotation: 20,
+                                minRotation: 20,
+                                font: { family: "'Plus Jakarta Sans', sans-serif", size: 10, weight: '550' },
+                                color: '#64748b'
+                            }
+                        } 
+                    }
+                }
+            });
+
+            // 4. Biểu đồ tròn: Tỉ lệ phản hồi đơn (Thành công vs Từ chối)
+            if (responseChartInstance) {
+                responseChartInstance.destroy();
+            }
+            responseChartInstance = new Chart(document.getElementById('responseChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Thành công', 'Từ chối'],
+                    datasets: [{
+                        data: [data.overview.approved_requests, data.overview.rejected_requests],
+                        backgroundColor: ['#10b981', '#f43f5e'],
+                        borderWidth: 0,
+                        cutout: '75%',
+                        borderRadius: 4
+                    }]
+                },
+                options: { 
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { 
+                                usePointStyle: true, 
+                                padding: 20,
+                                font: { family: "'Plus Jakarta Sans', sans-serif", size: 12, weight: '600' },
+                                color: '#1e293b'
+                            } 
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: '600' },
+                            bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                            padding: 12,
+                            displayColors: false,
+                            cornerRadius: 8
+                        }
+                    }
+                }
+            });
+
+            // 5. Cập nhật các chỉ số Hiệu suất chi tiết
+            const total = data.overview.total_bookings || 1;
+            const handled = data.overview.approved_requests + data.overview.rejected_requests;
+            const rate = Math.round((handled / total) * 100);
+
+            document.getElementById('perf-rate').innerText = rate + "%";
+            
+            const statusLabel = document.getElementById('perf-status');
+            if (rate >= 90) { statusLabel.innerText = "XUẤT SẮC"; statusLabel.style.color = "var(--success)"; }
+            else if (rate >= 70) { statusLabel.innerText = "TỐT"; statusLabel.style.color = "var(--primary)"; }
+            else { statusLabel.innerText = "CẦN CẢI THIỆN"; statusLabel.style.color = "var(--danger)"; }
+
+            // 6. Biểu đồ Trend (7 ngày qua) - Area Chart với Gradient
+            const trendLabels = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+            const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const trendData = dayOrder.map(d => {
+                const found = data.daily_stats ? data.daily_stats.find(s => s.day === d) : null;
+                return found ? parseInt(found.count) : 0;
+            });
+
+            const ctxTrend = document.getElementById('trendChart').getContext('2d');
+            const gradient = ctxTrend.createLinearGradient(0, 0, 0, 100);
+            gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+            gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+
+            if (trendChartInstance) {
+                trendChartInstance.destroy();
+            }
+            trendChartInstance = new Chart(ctxTrend, {
+                type: 'line',
+                data: {
+                    labels: trendLabels,
+                    datasets: [{
+                        label: 'Số đơn',
+                        data: trendData,
+                        borderColor: '#6366f1',
+                        borderWidth: 3,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        x: { 
+                            display: true, 
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: "'Plus Jakarta Sans', sans-serif", size: 10, weight: '550' },
+                                color: '#64748b'
+                            }
+                        }, 
+                        y: { display: false, beginAtZero: true } 
+                    }
+                }
+            });
+            // 7. BIỂU ĐỒ TẦN SUẤT SỪ DỤNG THEO KHUNG GIỜ
+            if (data.slot_usage_stats && data.slot_usage_stats.length > 0) {
+                const slotLabels = data.slot_usage_stats.map(s => s.label);
+                const slotValues = data.slot_usage_stats.map(s => parseInt(s.total_bookings));
+                const slotColors = data.slot_usage_stats.map(s => 
+                    s.is_peak == 1 ? '#f43f5e' : '#6366f1'
+                );
+                const slotBg = data.slot_usage_stats.map(s =>
+                    s.is_peak == 1 ? 'rgba(244, 63, 94, 0.15)' : 'rgba(99, 102, 241, 0.15)'
+                );
+
+                if (slotChartInstance) {
+                    slotChartInstance.destroy();
+                }
+                slotChartInstance = new Chart(document.getElementById('slotChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: slotLabels,
+                        datasets: [{
+                            label: 'Số lượt đặt',
+                            data: slotValues,
+                            backgroundColor: slotBg,
+                            borderColor: slotColors,
+                            borderWidth: 2,
+                            borderRadius: 6,
+                            barThickness: 45
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1e293b',
+                                titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: '600' },
+                                bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                                padding: 12,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: ctx => ` ${ctx.raw} lượt đặt`,
+                                    afterLabel: (ctx) => {
+                                        const s = data.slot_usage_stats[ctx.dataIndex];
+                                        return s.is_peak == 1 ? '⚠️ Giờ cao điểm' : '✅ Giờ bình thường';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true, 
+                                grid: { 
+                                    color: 'rgba(226, 232, 240, 0.8)', 
+                                    drawBorder: false,
+                                    borderDash: [5, 5]
+                                }, 
+                                ticks: { 
+                                    precision: 0,
+                                    stepSize: 1,
+                                    font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '550' },
+                                    color: '#64748b'
+                                } 
+                            },
+                            x: { 
+                                grid: { display: false },
+                                ticks: {
+                                    font: { family: "'Plus Jakarta Sans', sans-serif", size: 10, weight: '550' },
+                                    color: '#64748b'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Tạo nhận xét tự động về giờ cao điểm
+                const peakSlots = data.slot_usage_stats.filter(s => s.is_peak == 1);
+                const normalSlots = data.slot_usage_stats.filter(s => s.is_peak == 0);
+                const peakTotal = peakSlots.reduce((a, s) => a + parseInt(s.total_bookings), 0);
+                const normalTotal = normalSlots.reduce((a, s) => a + parseInt(s.total_bookings), 0);
+                const totalAll = peakTotal + normalTotal || 1;
+                const peakPct = Math.round((peakTotal / totalAll) * 100);
+
+                const busiest = data.slot_usage_stats.reduce((max, s) => parseInt(s.total_bookings) > parseInt(max.total_bookings) ? s : max, data.slot_usage_stats[0]);
+
+                const insightEl = document.getElementById('slot-insight');
+                insightEl.innerHTML = `
+                    📊 <strong>Nhận xét:</strong> Trong tháng này, giờ cao điểm chiếm <strong style="color:#ef4444">${peakPct}%</strong> tổng lượt đặt chỗ.
+                    Khung giờ được đặt nhiều nhất là <strong style="color:var(--primary)">${busiest.label}</strong> với ${busiest.total_bookings} lượt.
+                    ${peakPct > 60 ? '⚠️ <strong>Khéo: các khung giờ cao điểm đang quá tải. Nhà trường nên xét mở thêm giờ!</strong>' : '✅ Tải lưu thượng được phân bố hợp lý.'}
+                `;
+            }
+        }
+
+        function ketNoiRealtimeReport() {
+            if (typeof DUONG_DAN_GOC === 'undefined') return;
+            const sseSource = new EventSource(`${DUONG_DAN_GOC}/sse/updates`, { withCredentials: true });
+
+            sseSource.addEventListener('update', (e) => {
+                console.log("⚡ Nhận tín hiệu cập nhật Real-time (Reports):", e.data);
+                const monthFilter = document.getElementById('month-filter');
+                const selectedMonth = monthFilter ? monthFilter.value : '';
+                initReport(selectedMonth);
+            });
+
+            sseSource.onerror = () => {
+                console.warn("Mất kết nối SSE (Reports), đang thử kết nối lại...");
+                sseSource.close();
+                setTimeout(ketNoiRealtimeReport, 3000);
+            };
+        }
+
+        function capNhatGiaoDienTeacher() {
+            const u = layUser();
+            if (u && u.role === 'teacher') {
+                const badge = document.querySelector('.top-badge-v2');
+                if (badge) badge.innerText = "BÁO CÁO PHÂN CÔNG";
+                
+                const title = document.querySelector('.section-title');
+                if (title) title.innerText = "Báo Cáo Phân Công";
+                
+                const subtext = document.querySelector('.sub-text');
+                if (subtext) subtext.innerText = "Theo dõi và đánh giá hiệu suất vận hành của các phòng/thiết bị được phân công.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            capNhatGiaoDienTeacher();
+
+            // Thiết lập giá trị mặc định cho ô chọn tháng là tháng hiện tại (YYYY-MM)
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const defaultMonth = `${year}-${month}`;
+            
+            const monthFilter = document.getElementById('month-filter');
+            if (monthFilter) {
+                monthFilter.value = defaultMonth;
+                monthFilter.addEventListener('change', (e) => {
+                    initReport(e.target.value);
+                });
+            }
+
+            initReport(defaultMonth);
+            ketNoiRealtimeReport();
+        });
+    </script>
+</body>
+</html>
