@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Khám Phá Tài Nguyên | CampusBook</title>
+    <link rel="stylesheet" href="../assets/css/resources.css?v=11.0">
+    <style>
+        /* Slot Grid & Pills */
+        .slot-pill {
+            position: relative;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            user-select: none;
+            margin-top: 5px;
+        }
+        .slot-pill:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+        .slot-pill.active {
+            background: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+        .slot-pill.active .slot-time,
+        .slot-pill.active .slot-label {
+            color: white !important;
+        }
+        .slot-label {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.85rem;
+            transition: color 0.15s;
+        }
+        .slot-time {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 550;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.15s;
+        }
+        .slot-peak-tag {
+            margin-top: 4px;
+            font-size: 9px;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid rgba(153, 27, 27, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .slot-pill.active .slot-peak-tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Floating Orbs -->
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+    <div class="hero-orb orb-3"></div>
+
+    <!-- Sidebar nạp tự động -->
+
+    <main class="main-content">
+        <header class="header-center">
+            <p class="top-badge-v2">KHÔNG GIAN TIỆN NGHI</p>
+            <h1 class="section-title">Khám Phá Tài Nguyên</h1>
+            <p class="sub-text">Chọn không gian phù hợp để bắt đầu hành trình học tập, nghiên cứu và rèn luyện trong
+                khuôn viên trường.</p>
+            <button id="btn-admin-add-resource" class="btn-confirm" onclick="moResourceModal()" style="display: none; width: auto; margin: 15px auto 0 auto; padding: 10px 24px; font-size: 0.95rem; border-radius: 12px; background: var(--primary);">
+                <i class="fas fa-plus"></i> Thêm tài nguyên mới
+            </button>
+        </header>
+
+        <!-- Search & Filter Section -->
+        <div class="search-filter-wrapper">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" class="search-bar" placeholder="Tìm kiếm không gian, tòa nhà...">
+            </div>
+
+            <div class="categories-container" id="category-filters">
+                <button class="cat-btn active" onclick="filterByCategory('all', this)">
+                    <i class="fas fa-th-large"></i> Tất cả
+                </button>
+                <button class="cat-btn" onclick="filterByCategory('Phòng tự học nhóm', this)">
+                    <i class="fas fa-book-reader"></i> Phòng tự học nhóm
+                </button>
+                <button class="cat-btn" onclick="filterByCategory('Sân bóng đá', this)">
+                    <i class="fas fa-futbol"></i> Sân bóng đá
+                </button>
+                <button class="cat-btn" onclick="filterByCategory('Phòng máy tính', this)">
+                    <i class="fas fa-desktop"></i> Phòng máy tính
+                </button>
+                <button class="cat-btn" onclick="filterByCategory('Hội trường/Phòng họp', this)">
+                    <i class="fas fa-users"></i> Hội trường/Phòng họp
+                </button>
+                <button class="cat-btn" onclick="filterByCategory('Phòng Studio/Media', this)">
+                    <i class="fas fa-camera-retro"></i> Phòng Studio/Media
+                </button>
+            </div>
+        </div>
+
+        <div id="resource-list" class="grid">
+            <p style="text-align: center; grid-column: 1/-1;">Đang tải dữ liệu không gian...</p>
+        </div>
+    </main>
+
+    <!-- Redesigned Premium Modal -->
+    <div id="booking-modal" class="modal-v2">
+        <div class="modal-content-v2">
+            <button type="button" class="modal-close-btn" onclick="dongModal()">&times;</button>
+            <h2 id="modal-title" class="modal-title-v2">Đặt lịch</h2>
+
+            <form id="form-dat-cho">
+                <input type="hidden" id="target-resource-id">
+
+                <div class="form-group">
+                    <label class="form-label">Tên người đặt:</label>
+                    <input type="text" id="input-booked-name" class="form-input-v2"
+                        placeholder="Nhập tên người sử dụng..." required>
+                </div>
+
+                <!-- Thêm trường thông tin Lớp học cho Giảng viên (ẩn mặc định) -->
+                <div class="form-group" id="teacher-class-group" style="display: none;">
+                    <label class="form-label">Đặt cho lớp học (Chỉ dành cho Giảng viên):</label>
+                    <input type="text" id="input-teacher-class" class="form-input-v2"
+                        placeholder="Ví dụ: Lớp CNTT K20, Anh văn giao tiếp...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Chọn ngày:</label>
+                    <input type="date" id="input-date" class="form-input-v2" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Chọn ca thể thao/học tập:</label>
+                    <div id="slots-grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 8px;">
+                        <p style="grid-column: 1/-1; font-size: 0.85rem; color: var(--slate);">Đang tải danh sách ca...</p>
+                    </div>
+                    <input type="hidden" id="select-slot" required>
+                    <div id="slot-info-note" style="margin-top: 15px; min-height: 38px;"></div>
+                </div>
+
+                <button type="submit" class="btn-confirm">Xác nhận đặt ngay</button>
+                <button type="button" class="btn-cancel-v2" onclick="dongModal()">Hủy bỏ</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Thêm/Sửa Tài Nguyên dành cho Admin -->
+    <div id="resource-modal" class="modal-v2">
+        <div class="modal-content-v2">
+            <button type="button" class="modal-close-btn" onclick="dongResourceModal()">&times;</button>
+            <h2 id="resource-modal-title" class="modal-title-v2">Thêm tài nguyên mới</h2>
+
+            <form id="form-resource">
+                <input type="hidden" id="resource-id">
+
+                <div class="form-group">
+                    <label class="form-label">Tên tài nguyên:</label>
+                    <input type="text" id="res-name" class="form-input-v2" placeholder="Ví dụ: Phòng Máy 03, Sân Cầu Lông C" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Danh mục:</label>
+                    <select id="res-category" class="form-input-v2 select-filter" required>
+                        <option value="1">Phòng tự học nhóm</option>
+                        <option value="2">Sân bóng đá</option>
+                        <option value="3">Phòng máy tính</option>
+                        <option value="4">Hội trường/Phòng họp</option>
+                        <option value="5">Phòng Studio/Media</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Vị trí:</label>
+                    <input type="text" id="res-location" class="form-input-v2" placeholder="Ví dụ: Tòa A, Tầng 3" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sức chứa (người):</label>
+                    <input type="number" id="res-capacity" class="form-input-v2" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mô tả (tùy chọn):</label>
+                    <textarea id="res-description" class="form-input-v2" style="height: 80px;" placeholder="Nhập ghi chú hoặc mô tả trang thiết bị..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Loại khung giờ:</label>
+                    <select id="res-slot-type" class="form-input-v2 select-filter" required>
+                        <option value="academic">Học tập (Academic)</option>
+                        <option value="sport">Thể thao (Sport)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Trạng thái:</label>
+                    <select id="res-available" class="form-input-v2 select-filter" required>
+                        <option value="1">Sẵn sàng sử dụng</option>
+                        <option value="0">Tạm dừng hoạt động (Bảo trì)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-confirm">Lưu lại</button>
+                <button type="button" class="btn-cancel-v2" onclick="dongResourceModal()">Hủy bỏ</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js?v=3.0"></script>
+    <script src="../assets/js/auth.js?v=3.0"></script>
+    <script src="../assets/js/components.js?v=20.0"></script>
+    <script>
+        loadSidebar('resources');
+        baoVeTrang(); // Cho phép mọi user đã đăng nhập
+    </script>
+    <script src="../assets/js/booking.js?v=3.3"></script>
+
+</body>
+
+</html>
