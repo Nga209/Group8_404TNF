@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phê Duyệt Yêu Cầu | CampusBook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/resources.css?v=10.1">
+    <link rel="stylesheet" href="../assets/css/approvals.css?v=16.1">
+    <style>
+        /* Premium Month Filter Styling */
+        .month-filter-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin: 0 0 24px 0;
+            padding: 14px 24px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.01);
+        }
+        
+        .month-filter-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1.5px solid #cbd5e1;
+            transition: all 0.2s ease;
+        }
+        
+        .month-filter-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(143, 168, 255, 0.25);
+        }
+        
+        .month-icon {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        
+        .month-filter-label {
+            font-weight: 750;
+            color: #475569;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+        
+        #month-filter {
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #1e293b;
+            outline: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        
+        #btn-clear-month {
+            background: #fdf2f2;
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.18);
+            padding: 9px 18px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        #btn-clear-month:hover {
+            background: #fee2e2;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(239, 68, 68, 0.08);
+        }
+        
+        #btn-clear-month:active {
+            transform: translateY(0);
+        }
+        
+        /* Resource Types Custom Icon Badges */
+        .res-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .res-sport {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid rgba(22, 163, 74, 0.12);
+        }
+        .res-lab {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid rgba(37, 99, 235, 0.12);
+        }
+        .res-hall {
+            background: #faf5ff;
+            color: #7c3aed;
+            border: 1px solid rgba(124, 58, 237, 0.12);
+        }
+        .res-default {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid rgba(71, 85, 105, 0.12);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+        <header class="header-center">
+            <p class="top-badge-v2">PHÊ DUYỆT YÊU CẦU</p>
+            <h1 class="section-title">Duyệt Đơn Đặt Chỗ</h1>
+            <p class="sub-text">Bạn đang có <span id="count-pending" style="color: var(--primary); font-weight: 700;">0</span> đơn đang chờ xử lý. Vui lòng phê duyệt hoặc từ chối các yêu cầu đặt chỗ.</p>
+        </header>
+
+        <div class="bento-wrapper">
+            <!-- Filter Tabs inside Card -->
+            <div class="filter-tabs-container">
+                <button class="filter-tab" data-status="all">
+                    <i class="fas fa-layer-group"></i> Tất cả
+                </button>
+                <button class="filter-tab" data-status="pending">
+                    <i class="fas fa-clock"></i> Chờ duyệt <span id="tab-count-pending" class="tab-badge">0</span>
+                </button>
+                <button class="filter-tab" data-status="approved">
+                    <i class="fas fa-check-circle"></i> Đã duyệt
+                </button>
+                <button class="filter-tab" data-status="rejected">
+                    <i class="fas fa-times-circle"></i> Từ chối
+                </button>
+            </div>
+
+            <!-- Month filter section -->
+            <div class="month-filter-container">
+                <div class="month-filter-wrapper">
+                    <i class="far fa-calendar-alt month-icon"></i>
+                    <span class="month-filter-label">Xem theo tháng:</span>
+                    <input type="month" id="month-filter">
+                </div>
+                <button id="btn-clear-month">
+                    <i class="fas fa-times-circle"></i> Xóa lọc
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 30%; text-align: left;">Thông tin người đặt</th>
+                        <th style="width: 26%; text-align: left;">Tài nguyên</th>
+                        <th style="width: 18%; text-align: center;">Thời gian sử dụng</th>
+                        <th style="width: 13%; text-align: center;">Trạng thái</th>
+                        <th style="width: 13%; text-align: center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="render-target">
+                    <!-- Loading state -->
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 50px; color: var(--slate);">
+                            <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+                            <p>Đang đồng bộ dữ liệu hệ thống...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../assets/js/api.js?v=3.1"></script>
+    <script src="../assets/js/auth.js?v=3.1"></script>
+    <script src="../assets/js/components.js?v=20.1"></script>
+    <script>
+        // Khởi tạo Sidebar & Bảo vệ quyền truy cập
+        loadSidebar('approvals');
+        baoVeTrang(['admin', 'teacher']);
+
+        // Biến toàn cục để lưu trữ dữ liệu hiện tại và bộ lọc đang chọn
+        let currentData = [];
+        let currentFilter = 'all';
+        let currentMonthFilter = ''; // Bộ lọc tháng: YYYY-MM hoặc rỗng
+
+        async function fetchAndRender() {
+            try {
+                // Thử fetch từ API
+                const response = await goiApi('/approvals', 'GET');
+                
+                if (response && response.status === 'success') {
+                    currentData = response.data;
+                } else {
+                    throw new Error("API chưa có dữ liệu");
+                }
+            } catch (error) {
+                console.warn("Sử dụng Mock Data mẫu...");
+                // Mock Data dự phòng đồng bộ với thuộc tính của DB
+                currentData = [
+                    { id: 1, fullname: "Nguyễn Thị Thúy Nga", user_id: 3, resource_name: "Sân Bóng Đá A", booking_date: "2026-05-30", slot_name: "Ca 4 (Chiều)", status: "pending", created_at: "2026-05-29 14:05:00" },
+                    { id: 2, fullname: "Trần Quốc Đại", user_id: 14, resource_name: "Hội trường A1", booking_date: "2026-05-28", slot_name: "Ca 2 (Sáng)", status: "pending", created_at: "2026-05-27 10:15:00" },
+                    { id: 3, fullname: "Nguyễn Thị Huyền Thương", user_id: 3, resource_name: "Phòng Máy 01", booking_date: "2026-05-26", slot_name: "Ca 1 (Sáng)", status: "approved", created_at: "2026-05-25 09:00:00" }
+                ];
+            }
+
+            renderUI();
+        }
+
+        function renderUI() {
+            const target = document.getElementById('render-target');
+            const countLabel = document.getElementById('count-pending');
+            const tabCountPending = document.getElementById('tab-count-pending');
+            
+            let html = '';
+            let pendingCount = 0;
+
+            // Đếm số đơn chờ duyệt khớp với bộ lọc tháng đang chọn
+            currentData.forEach(item => {
+                if (item.status === 'pending') {
+                    if (!currentMonthFilter || (item.booking_date && item.booking_date.startsWith(currentMonthFilter))) {
+                        pendingCount++;
+                    }
+                }
+            });
+
+            if (countLabel) countLabel.innerText = pendingCount;
+            if (tabCountPending) tabCountPending.innerText = pendingCount;
+
+            // Lọc dữ liệu hiển thị theo trạng thái và bộ lọc tháng
+            let filteredData = currentData;
+            if (currentFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.status === currentFilter);
+            }
+            if (currentMonthFilter) {
+                filteredData = filteredData.filter(item => item.booking_date && item.booking_date.startsWith(currentMonthFilter));
+            }
+
+            if (filteredData.length === 0) {
+                target.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 60px; color: var(--slate);">
+                        <i class="fas fa-inbox fa-3x" style="margin-bottom: 15px; color: #cbd5e1; display: block;"></i>
+                        <b style="font-size: 1.15rem; color: var(--dark); display: block; margin-bottom: 5px;">Không tìm thấy kết quả</b>
+                        <span style="font-size: 0.85rem;">Không có yêu cầu đặt chỗ nào ở trạng thái này.</span>
+                    </td>
+                </tr>`;
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const displayName = item.booked_for_name || item.fullname || "Người dùng";
+                const initial = displayName.charAt(0).toUpperCase();
+                
+                html += `
+                <tr>
+                    <td>
+                        <div class="profile-box">
+                            <div class="avatar">${initial}</div>
+                            <div class="name-stack">
+                                <b>${displayName}</b>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                                    <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 500;">ID: ${item.user_id}</span>
+                                    <span class="sent-badge" style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; color: #4f46e5; background: #f5f3ff; border: 1px solid rgba(79, 70, 227, 0.12); padding: 2px 7px; border-radius: 6px; font-weight: 600;" title="Thời điểm gửi yêu cầu">
+                                        <i class="far fa-paper-plane" style="font-size: 0.7rem;"></i> Gửi lúc: ${formatDateTime(item.created_at)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td style="text-align: left;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="res-icon-box ${getResourceColorClass(item.resource_name)}">
+                                <i class="fas ${getResourceIcon(item.resource_name)}" style="font-size: 0.9rem;"></i>
+                            </div>
+                            <span class="res-tag" style="font-weight: 700; color: var(--dark); font-size: 0.95rem;">${item.resource_name}</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; justify-content: center;">
+                            <span style="font-weight: 700; color: #1e293b; font-size: 0.85rem; background: #f1f5f9; padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #e2e8f0;">
+                                <i class="far fa-calendar-alt" style="color: var(--primary); font-size: 0.8rem;"></i>
+                                ${formatDate(item.booking_date)}
+                            </span>
+                            <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="far fa-clock"></i>
+                                ${item.slot_name}
+                            </span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="badge ${getStatusClass(item.status)}">
+                            <i class="fas ${getStatusIcon(item.status)}"></i>
+                            ${getStatusText(item.status)}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="action-flex">
+                            ${item.status === 'pending' ? `
+                                <button class="btn btn-deny" onclick="handleAction(${item.id}, 'rejected')">
+                                    <i class="fas fa-times"></i> Từ chối
+                                </button>
+                                <button class="btn btn-check" onclick="handleAction(${item.id}, 'approved')">
+                                    <i class="fas fa-check"></i> Phê duyệt
+                                </button>
+                            ` : `<span class="done-label">ĐÃ XỬ LÝ</span>`}
+                        </div>
+                    </td>
+                </tr>`;
+            });
+
+            target.innerHTML = html;
+        }
+
+        async function handleAction(id, status) {
+            const confirmText = status === 'approved' ? 'phê duyệt' : 'từ chối';
+            if (!confirm(`Bạn chắc chắn muốn ${confirmText} yêu cầu này?`)) return;
+
+            try {
+                const result = await goiApi('/bookings/approve', 'POST', {
+                    booking_id: id,
+                    status: status
+                });
+
+                if (result.status === 'success') {
+                    showToast("Cập nhật thành công", "success");
+                    fetchAndRender(); // Gọi lại để lấy data mới nhất từ server
+                } else {
+                    // Nếu API thất bại (trường hợp demo), cập nhật local để người dùng thấy thay đổi
+                    const itemIndex = currentData.findIndex(i => i.id === id);
+                    if (itemIndex !== -1) {
+                        currentData[itemIndex].status = status;
+                        renderUI();
+                        showToast("(Demo) Đã cập nhật trạng thái");
+                    }
+                }
+            } catch (error) {
+                // Xử lý local nếu không có backend kết nối
+                const itemIndex = currentData.findIndex(i => i.id === id);
+                if (itemIndex !== -1) {
+                    currentData[itemIndex].status = status;
+                    renderUI();
+                    showToast("(Demo) Đã cập nhật trạng thái");
+                }
+            }
+        }
+
+        // Helper functions
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr;
+                return d.toLocaleDateString('vi-VN');
+            } catch(e) {
+                return dateStr;
+            }
+        }
+
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr) return 'N/A';
+            try {
+                const parts = dateTimeStr.split(' ');
+                if (parts.length < 2) {
+                    const d = new Date(dateTimeStr);
+                    if (isNaN(d.getTime())) return dateTimeStr;
+                    // Format DD/MM/YYYY HH:MM
+                    const date = d.toLocaleDateString('vi-VN');
+                    const time = d.toTimeString().substring(0, 5);
+                    return `${date} ${time}`;
+                }
+                const dateParts = parts[0].split('-');
+                const timeParts = parts[1].split(':');
+                if (dateParts.length === 3 && timeParts.length >= 2) {
+                    return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]} ${timeParts[0]}:${timeParts[1]}`;
+                }
+                return dateTimeStr;
+            } catch(e) {
+                return dateTimeStr;
+            }
+        }
+
+        function getStatusClass(s) {
+            return s === 'pending' ? 'st-pending' : (s === 'approved' ? 'st-approved' : 'st-rejected');
+        }
+        function getStatusIcon(s) {
+            return s === 'pending' ? 'fa-clock' : (s === 'approved' ? 'fa-check-circle' : 'fa-times-circle');
+        }
+        function getStatusText(s) {
+            return s === 'pending' ? 'Chờ duyệt' : (s === 'approved' ? 'Đã duyệt' : 'Từ chối');
+        }
+
+        function getResourceIcon(name) {
+            name = (name || "").toLowerCase();
+            if (name.includes("sân") || name.includes("bóng") || name.includes("thể thao")) {
+                return "fa-futbol";
+            }
+            if (name.includes("máy") || name.includes("lab") || name.includes("tin học") || name.includes("đồ họa")) {
+                return "fa-laptop-code";
+            }
+            if (name.includes("hội trường") || name.includes("hall") || name.includes("a1")) {
+                return "fa-users";
+            }
+            return "fa-university";
+        }
+        
+        function getResourceColorClass(name) {
+            name = (name || "").toLowerCase();
+            if (name.includes("sân") || name.includes("bóng") || name.includes("thể thao")) {
+                return "res-sport";
+            }
+            if (name.includes("máy") || name.includes("lab") || name.includes("tin học") || name.includes("đồ họa")) {
+                return "res-lab";
+            }
+            if (name.includes("hội trường") || name.includes("hall") || name.includes("a1")) {
+                return "res-hall";
+            }
+            return "res-default";
+        }
+
+        // Kết nối Real-time SSE để cập nhật dưới 1 giây
+        function ketNoiRealtime() {
+            const sseSource = new EventSource(`${DUONG_DAN_GOC}/sse/updates`, { withCredentials: true });
+
+            sseSource.addEventListener('update', (e) => {
+                console.log("⚡ [Real-time] Có đơn đặt mới, đang cập nhật danh sách...");
+                fetchAndRender();
+            });
+
+            sseSource.onerror = () => {
+                sseSource.close();
+                setTimeout(ketNoiRealtime, 3000);
+            };
+        }
+
+        // Cập nhật giao diện Tab đang hoạt động
+        function updateTabUI() {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                if (tab.getAttribute('data-status') === currentFilter) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        }
+
+        // Chạy lần đầu sau khi load trang
+        window.addEventListener('DOMContentLoaded', () => {
+            // Đọc trạng thái lọc từ URL nếu có
+            const urlParams = new URLSearchParams(window.location.search);
+            const statusParam = urlParams.get('status');
+            if (['all', 'pending', 'approved', 'rejected'].includes(statusParam)) {
+                currentFilter = statusParam;
+            }
+            
+            // Đọc bộ lọc tháng từ URL nếu có
+            const monthParam = urlParams.get('month');
+            const monthInput = document.getElementById('month-filter');
+            const clearBtn = document.getElementById('btn-clear-month');
+            
+            if (monthParam && /^\d{4}-\d{2}$/.test(monthParam)) {
+                currentMonthFilter = monthParam;
+                if (monthInput) {
+                    monthInput.value = monthParam;
+                }
+                if (clearBtn) {
+                    clearBtn.style.display = 'inline-flex';
+                }
+            }
+
+            updateTabUI();
+
+            // Gắn sự kiện click cho các Tab lọc trạng thái
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    currentFilter = tab.getAttribute('data-status');
+                    updateTabUI();
+                    
+                    // Cập nhật URL mà không reload lại trang
+                    const url = new URL(window.location);
+                    url.searchParams.set('status', currentFilter);
+                    window.history.pushState({}, '', url);
+                    
+                    renderUI();
+                });
+            });
+
+            // Gắn sự kiện cho bộ lọc tháng
+            if (monthInput) {
+                monthInput.addEventListener('change', (e) => {
+                    currentMonthFilter = e.target.value;
+                    if (clearBtn) {
+                        clearBtn.style.display = currentMonthFilter ? 'inline-flex' : 'none';
+                    }
+                    
+                    const url = new URL(window.location);
+                    if (currentMonthFilter) {
+                        url.searchParams.set('month', currentMonthFilter);
+                    } else {
+                        url.searchParams.delete('month');
+                    }
+                    window.history.pushState({}, '', url);
+                    
+                    renderUI();
+                });
+            }
+
+            // Gắn sự kiện xóa bộ lọc tháng
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    currentMonthFilter = '';
+                    if (monthInput) monthInput.value = '';
+                    clearBtn.style.display = 'none';
+                    
+                    const url = new URL(window.location);
+                    url.searchParams.delete('month');
+                    window.history.pushState({}, '', url);
+                    
+                    renderUI();
+                });
+            }
+
+            fetchAndRender();
+            ketNoiRealtime();
+        });
+    </script>
+</body>
+</html>
