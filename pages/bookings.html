@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/components.css?v=9.0">
+    <title>Xác Nhận Đặt Chỗ | CampusBook</title>
+    <link rel="stylesheet" href="../assets/css/bookings.css?v=9.0">
+</head>
+<body>
+    <div class="container">
+        <div class="card-form">
+            <div class="icon-header">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h2 id="tieu-de-dat-cho">Đang tải thông tin...</h2>
+            
+            <form id="form-dat-cho">
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Thời gian bắt đầu</label>
+                    <input type="datetime-local" id="gio_bat_dau" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-history"></i> Thời gian kết thúc</label>
+                    <input type="datetime-local" id="gio_ket_thuc" required>
+                </div>
+
+                <p style="font-size: 0.8rem; color: #94a3b8; text-align: center; margin-top: 10px;">
+                    * Vui lòng kiểm tra kỹ thời gian trước khi xác nhận.
+                </p>
+
+                <div class="nhom-nut">
+                    <button type="button" class="btn btn-gray" onclick="history.back()">Quay lại</button>
+                    <button type="submit" class="btn btn-primary">Xác Nhận Đặt Chỗ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+        baoVeTrang(); // Yêu cầu phải đăng nhập
+    </script>
+    <script src="../assets/js/booking.js"></script>
+    <script>
+        const thamSo = new URLSearchParams(window.location.search);
+        const resourceName = thamSo.get('ten') || 'Tài nguyên';
+        const resourceId = thamSo.get('id');
+        
+        document.getElementById('tieu-de-dat-cho').innerText = "Đặt chỗ: " + resourceName;
+
+        // Xử lý submit form
+        document.getElementById('form-dat-cho').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                resource_id: resourceId,
+                start_time: document.getElementById('gio_bat_dau').value,
+                end_time: document.getElementById('gio_ket_thuc').value
+            };
+
+            // Gọi hàm xử lý từ file booking.js của bạn
+            if (typeof xuLyDatCho === 'function') {
+                xuLyDatCho(data);
+            } else {
+                alert("Đã gửi yêu cầu đặt " + resourceName);
+            }
+        };
+    </script>
+</body>
+</html>
